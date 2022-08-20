@@ -18,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ItemController {
     private final ItemService itemService;
+
     @PostMapping
     ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long userId,
                     @RequestBody @Valid ItemDto item) throws UserNotFoundException {
@@ -25,14 +26,14 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    ItemDto editItem (@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
-                      @RequestBody ItemDto item) throws ItemNotFoundException, UserNotFoundException {
+    ItemDto editItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
+                     @RequestBody ItemDto item) throws ItemNotFoundException, UserNotFoundException {
         return itemService.updateItem(userId, itemId, item);
     }
 
     @GetMapping("/{itemId}")
     ItemDto getItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                 @PathVariable(name = "itemId") long itemId) throws ItemNotFoundException, UserNotFoundException {
+                    @PathVariable(name = "itemId") long itemId) throws ItemNotFoundException, UserNotFoundException {
         return itemService.getItemById(userId, itemId);
     }
 
@@ -43,7 +44,7 @@ public class ItemController {
 
     @GetMapping("/search")
     List<ItemDto> findItemByName(@RequestHeader("X-Sharer-User-Id") long userId,
-                        @RequestParam(name = "text") String text) {
+                                 @RequestParam(name = "text") String text) {
         return text.isBlank() ? new ArrayList<>() : itemService.findItemByName(text);
     }
 }
