@@ -3,7 +3,7 @@ package ru.practicum.shareit.requests;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.RequestNotFoundException;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 
 import java.util.List;

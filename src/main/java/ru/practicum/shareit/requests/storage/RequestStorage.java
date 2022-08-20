@@ -1,7 +1,7 @@
 package ru.practicum.shareit.requests.storage;
 
-import ru.practicum.shareit.requests.ItemRequest;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.shareit.requests.model.ItemRequest;
+import ru.practicum.shareit.requests.model.ItemRequestDto;
 
 import java.util.List;
 import java.util.Optional;

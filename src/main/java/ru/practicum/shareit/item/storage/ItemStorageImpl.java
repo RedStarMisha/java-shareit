@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
@@ -21,7 +22,7 @@ public class ItemStorageImpl implements ItemStorage{
 
     @Override
     public Item addItem(long userId, ItemDto itemDto) {
-        Item item = new Item(idCounter++, userId, itemDto);
+        Item item = ItemMapper.convertFromDto(idCounter++, userId, itemDto);
         if (usersItem.containsKey(userId)) {
             usersItem.get(userId).add(item.getId());
         } else {
