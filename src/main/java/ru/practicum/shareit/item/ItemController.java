@@ -17,9 +17,7 @@ import java.util.List;
 @RequestMapping("/items")
 @AllArgsConstructor
 public class ItemController {
-
     private final ItemService itemService;
-
     @PostMapping
     ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long userId,
                     @RequestBody @Valid ItemDto item) throws UserNotFoundException {
