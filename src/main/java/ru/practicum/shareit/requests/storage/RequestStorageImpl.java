@@ -2,8 +2,8 @@ package ru.practicum.shareit.requests.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.requests.ItemRequest;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.shareit.requests.model.ItemRequest;
+import ru.practicum.shareit.requests.model.ItemRequestDto;
 
 import java.util.*;
 
