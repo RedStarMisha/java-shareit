@@ -13,10 +13,8 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class ItemServiceImpl implements ItemService{
-
+public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
-
     private final UserService userService;
 
     @Override

@@ -16,7 +16,6 @@ import static ru.practicum.shareit.user.UserMapper.createUser;
 @Slf4j
 @Repository
 public class UserStorageImpl implements UserStorage{
-
     private final Map<Long, User> storage = new HashMap<>();
     private long countId = 1;
 

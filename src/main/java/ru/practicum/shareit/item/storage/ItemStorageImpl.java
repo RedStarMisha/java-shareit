@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
-public class ItemStorageImpl implements ItemStorage{
+public class ItemStorageImpl implements ItemStorage {
     private final Map<Long, Item> itemStorage = new HashMap<>();
     private final Map<Long, Set<Long>> usersItem = new HashMap<>();
     private long idCounter = 1;
@@ -50,7 +51,7 @@ public class ItemStorageImpl implements ItemStorage{
         }
         Item item = itemStorage.get(itemId);
         if (itemDto.getName() != null) {
-           item.setName(itemDto.getName());
+            item.setName(itemDto.getName());
         }
         if (itemDto.getDescription() != null) {
             item.setDescription(itemDto.getDescription());

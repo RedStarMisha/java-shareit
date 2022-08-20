@@ -9,8 +9,7 @@ import java.util.*;
 
 @Slf4j
 @Repository
-public class RequestStorageImpl implements RequestStorage{
-
+public class RequestStorageImpl implements RequestStorage {
     private final Map<Long, Map<Long, ItemRequest>> storage = new HashMap<>();
     private long requestId = 1;
 
