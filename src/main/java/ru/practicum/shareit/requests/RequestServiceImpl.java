@@ -1,7 +1,6 @@
 package ru.practicum.shareit.requests;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.RequestNotFoundException;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
@@ -36,7 +35,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void deleteRequest(long userId, long requestId){
+    public void deleteRequest(long userId, long requestId) {
         userService.getUserById(userId);
         requestStorage.getRequest(userId, requestId).orElseThrow(() -> new RequestNotFoundException(requestId));
         requestStorage.deleteRequest(userId, requestId);
