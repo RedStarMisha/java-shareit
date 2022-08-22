@@ -1,21 +1,18 @@
 package ru.practicum.shareit.requests;
 
-import ru.practicum.shareit.exceptions.RequestNotFoundException;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
-import ru.practicum.shareit.exceptions.UserNotFoundException;
 
 import java.util.List;
 
 public interface RequestService {
 
-    ItemRequestDto addRequest(long userId, ItemRequestDto itemRequestDto) throws UserNotFoundException;
+    ItemRequestDto addRequest(long userId, ItemRequestDto itemRequestDto);
 
-    ItemRequestDto updateRequest(long userId, long requestId, ItemRequestDto itemRequestDto)
-            throws RequestNotFoundException, UserNotFoundException;
+    ItemRequestDto updateRequest(long userId, long requestId, ItemRequestDto itemRequestDto);
 
-    void deleteRequest(long userId, long requestId) throws RequestNotFoundException, UserNotFoundException;
+    void deleteRequest(long userId, long requestId);
 
-    ItemRequestDto getRequest(long userId, long requestId) throws RequestNotFoundException, UserNotFoundException;
+    ItemRequestDto getRequest(long userId, long requestId);
 
-    List<ItemRequestDto> getUserRequests(long userId) throws UserNotFoundException;
+    List<ItemRequestDto> getUserRequests(long userId);
 }

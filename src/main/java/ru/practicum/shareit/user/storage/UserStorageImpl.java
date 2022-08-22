@@ -3,11 +3,8 @@ package ru.practicum.shareit.user.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.model.UserDto;
 
 import java.util.*;
-
-import static ru.practicum.shareit.user.UserMapper.createUser;
 
 /**
  * User storage into application memory
@@ -17,30 +14,28 @@ import static ru.practicum.shareit.user.UserMapper.createUser;
 @Repository
 public class UserStorageImpl implements UserStorage {
     private final Map<Long, User> storage = new HashMap<>();
-    private long countId = 1;
 
     @Override
-    public User addUser(UserDto userDto) {
-        User user = createUser(countId++, userDto);
-        log.info(user + " добавлен");
+    public User addUser(User user) {
         storage.put(user.getId(), user);
+        log.info(user + " добавлен");
         return user;
     }
 
     @Override
-    public Optional<User> updateUser(long userId, UserDto userDto) {
-        if (!storage.containsKey(userId)) {
-            log.warn("user с id = {} не найден", userId);
+    public Optional<User> updateUser(User user) {
+        if (!storage.containsKey(user.getId())) {
+            log.warn("user с id = {} не найден", user.getId());
             return Optional.empty();
         } else {
-            if (userDto.getName() != null) {
-                storage.get(userId).setName(userDto.getName());
+            if (user.getName() != null) {
+                storage.get(user.getId()).setName(user.getName());
             }
-            if (userDto.getEmail() != null) {
-                storage.get(userId).setEmail(userDto.getEmail());
+            if (user.getEmail() != null) {
+                storage.get(user.getId()).setEmail(user.getEmail());
             }
-            log.info(storage.get(userId) + " обновлен");
-            return Optional.of(storage.get(userId));
+            log.info(storage.get(user.getId()) + " обновлен");
+            return Optional.of(storage.get(user.getId()));
         }
     }
 

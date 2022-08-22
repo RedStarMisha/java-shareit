@@ -1,21 +1,28 @@
 package ru.practicum.shareit.item;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
 
-    public static ItemDto convertToDto(Item item) {
-        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.isAvailable(), item.getRequest());
+    public static ItemDto toItemDto(Item item) {
+        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
+                item.getRequest() == null ? null : item.getRequest().getId());
     }
 
-    public static Item convertFromDto(long id, long owner, ItemDto itemDto) {
+    public static Item toItem(@Nullable User owner, ItemDto itemDto, @Nullable ItemRequest itemRequest) {
         Item item = new Item();
-        item.setId(id);
+        item.setId(itemDto.getId());
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setOwner(owner);
-        item.setRequest(itemDto.getRequest());
+        item.setRequest(itemRequest);
         item.setAvailable(itemDto.getAvailable());
         return item;
     }

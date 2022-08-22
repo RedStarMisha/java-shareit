@@ -2,8 +2,6 @@ package ru.practicum.shareit.item.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.item.ItemMapper;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.*;
@@ -18,16 +16,11 @@ import java.util.stream.Collectors;
 public class ItemStorageImpl implements ItemStorage {
     private final Map<Long, Item> itemStorage = new HashMap<>();
     private final Map<Long, Set<Long>> usersItem = new HashMap<>();
-    private long idCounter = 1;
 
     @Override
-    public Item addItem(long userId, ItemDto itemDto) {
-        Item item = ItemMapper.convertFromDto(idCounter++, userId, itemDto);
-        if (usersItem.containsKey(userId)) {
-            usersItem.get(userId).add(item.getId());
-        } else {
-            usersItem.put(userId, new HashSet<>(Set.of(item.getId())));
-        }
+    public Item addItem(long userId, Item item) {
+        final Set<Long> localItems = usersItem.computeIfAbsent(userId, k -> new HashSet<>());
+        localItems.add(item.getId());
         itemStorage.put(item.getId(), item);
         log.info(item + " создана");
         return item;
@@ -44,26 +37,26 @@ public class ItemStorageImpl implements ItemStorage {
     }
 
     @Override
-    public Optional<Item> updateItem(long userId, long itemId, ItemDto itemDto) {
-        if (!usersItem.containsKey(userId) || !usersItem.get(userId).contains(itemId)) {
-            log.warn("у пользователя с id = {} нет item с id = {}", userId, itemId);
+    public Optional<Item> updateItem(long userId, Item item) {
+        if (!usersItem.containsKey(userId) || !usersItem.get(userId).contains(item.getId())) {
+            log.warn("у пользователя с id = {} нет item с id = {}", userId, item.getId());
             return Optional.empty();
         }
-        Item item = itemStorage.get(itemId);
-        if (itemDto.getName() != null) {
-            item.setName(itemDto.getName());
+        final Item itemInStorage = itemStorage.get(item.getId());
+        if (item.getName() != null) {
+            itemInStorage.setName(item.getName());
         }
-        if (itemDto.getDescription() != null) {
-            item.setDescription(itemDto.getDescription());
+        if (item.getDescription() != null) {
+            itemInStorage.setDescription(item.getDescription());
         }
-        if (itemDto.getAvailable() != null) {
-            item.setAvailable(itemDto.getAvailable());
+        if (item.getAvailable() != null) {
+            itemInStorage.setAvailable(item.getAvailable());
         }
-        if (itemDto.getRequest() != null) {
-            item.setRequest(itemDto.getRequest());
+        if (item.getRequest() != null) {
+            itemInStorage.setRequest(item.getRequest());
         }
-        log.info(item + " обновлен");
-        return Optional.of(item);
+        log.info(itemInStorage + " обновлен");
+        return Optional.of(itemInStorage);
     }
 
     @Override
@@ -74,7 +67,7 @@ public class ItemStorageImpl implements ItemStorage {
 
     @Override
     public List<Item> findItemByName(String text) {
-        return itemStorage.values().stream().filter(Item::isAvailable)
+        return itemStorage.values().stream().filter(Item::getAvailable)
                 .filter(items -> items.getName().toLowerCase().contains(text.toLowerCase()) ||
                         items.getDescription().toLowerCase().contains(text.toLowerCase())).collect(Collectors.toList());
     }
