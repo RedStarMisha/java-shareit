@@ -6,8 +6,6 @@ import lombok.Data;
 /**
  * // User class in storage .
  */
-
-
 @Data
 @AllArgsConstructor
 public class User {

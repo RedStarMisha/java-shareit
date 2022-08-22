@@ -3,7 +3,6 @@ package ru.practicum.shareit.requests.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.requests.model.ItemRequest;
-import ru.practicum.shareit.requests.model.ItemRequestDto;
 
 import java.util.*;
 
@@ -11,11 +10,9 @@ import java.util.*;
 @Repository
 public class RequestStorageImpl implements RequestStorage {
     private final Map<Long, Map<Long, ItemRequest>> storage = new HashMap<>();
-    private long requestId = 1;
 
     @Override
-    public ItemRequest addRequest(long userId, ItemRequestDto itemRequestDto) {
-        ItemRequest itemRequest = new ItemRequest(requestId++, userId, itemRequestDto);
+    public ItemRequest addRequest(long userId, ItemRequest itemRequest) {
         if (storage.containsKey(userId)) {
             storage.get(userId).put(itemRequest.getId(), itemRequest);
         } else {
@@ -26,10 +23,10 @@ public class RequestStorageImpl implements RequestStorage {
     }
 
     @Override
-    public Optional<ItemRequest> updateRequest(long userId, long requestId, ItemRequestDto itemRequestDto) {
+    public Optional<ItemRequest> updateRequest(long userId, long requestId, ItemRequest itemRequest) {
         if (storage.get(userId).containsKey(requestId)) {
-            if (itemRequestDto.getDescription() != null) {
-                storage.get(userId).get(requestId).setDescription(itemRequestDto.getDescription());
+            if (itemRequest.getDescription() != null) {
+                storage.get(userId).get(requestId).setDescription(itemRequest.getDescription());
             }
             log.info("запрос {} обновлен", storage.get(userId).get(requestId));
             return Optional.of(storage.get(userId).get(requestId));
