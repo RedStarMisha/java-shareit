@@ -27,6 +27,6 @@ public class MyExceptionHandler {
     @ExceptionHandler({Throwable.class})
     public ResponseEntity<String> unknownException(Throwable e) {
         log.error(e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
