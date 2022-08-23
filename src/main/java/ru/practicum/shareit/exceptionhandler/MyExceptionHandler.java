@@ -13,20 +13,20 @@ import ru.practicum.shareit.exceptions.EntityNotFoundException;
 public class MyExceptionHandler {
 
     @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity entityNotFoundException(EntityNotFoundException e) {
+    public ResponseEntity<String> entityNotFoundException(EntityNotFoundException e) {
         log.error(e.getMessage());
-        return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({EmailAlreadyExistException.class})
-    public ResponseEntity entityAlreadyExist(EmailAlreadyExistException e) {
+    public ResponseEntity<String> entityAlreadyExist(EmailAlreadyExistException e) {
         log.error(e.getMessage());
-        return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler({Throwable.class})
-    public ResponseEntity unknownException() {
-        log.error("Неизвестная ошибка");
-        return new ResponseEntity("Неизвестная ошибка", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> unknownException(Throwable e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
