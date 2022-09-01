@@ -1,8 +1,10 @@
 package ru.practicum.shareit.requests;
 
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
+import ru.practicum.shareit.requests.service.RequestService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -12,10 +14,15 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(path = "/requests")
-@AllArgsConstructor
+
 public class ItemRequestController {
 
     private final RequestService requestService;
+
+    @Autowired
+    public ItemRequestController(@Qualifier("repository") RequestService requestService) {
+        this.requestService = requestService;
+    }
 
     @PostMapping
     public ItemRequestDto addRequest(@RequestHeader("X-Later-User-Id") Long userId,
