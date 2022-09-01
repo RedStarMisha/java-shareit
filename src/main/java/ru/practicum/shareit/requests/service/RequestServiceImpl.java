@@ -1,11 +1,13 @@
-package ru.practicum.shareit.requests;
+package ru.practicum.shareit.requests.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.RequestNotFoundException;
+import ru.practicum.shareit.requests.RequestMapper;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.requests.storage.RequestStorage;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.service.UserService;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,12 +15,17 @@ import static ru.practicum.shareit.requests.RequestMapper.toRequest;
 import static ru.practicum.shareit.requests.RequestMapper.toRequestDto;
 
 @Service
-@RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
 
     private final RequestStorage requestStorage;
     private final UserService userService;
     private long requestId = 1;
+
+    @Autowired
+    public RequestServiceImpl(RequestStorage requestStorage, @Qualifier("storage") UserService userService) {
+        this.requestStorage = requestStorage;
+        this.userService = userService;
+    }
 
     @Override
     public ItemRequestDto addRequest(long userId, ItemRequestDto itemRequestDto) {
