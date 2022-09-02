@@ -6,8 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.exceptions.BookingCreationException;
 import ru.practicum.shareit.exceptions.EmailAlreadyExistException;
-import ru.practicum.shareit.exceptions.EntityNotFoundException;
+import ru.practicum.shareit.exceptions.notfound.EntityNotFoundException;
 
 @RestControllerAdvice
 @Slf4j
@@ -29,6 +30,12 @@ public class MyExceptionHandler {
     public ResponseEntity<String> unknownException(Throwable e) {
         log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler({BookingCreationException.class})
+    public ResponseEntity<String> bookingCreationException(BookingCreationException e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     //обработка исключений валидации

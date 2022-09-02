@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE_USE, ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = TextValidator.class)
+@Constraint(validatedBy = DateChecker.class)
 public @interface CheckBookingDate {
 
     String message() default "Недопустимые даты аренды";

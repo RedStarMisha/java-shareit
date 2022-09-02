@@ -1,4 +1,4 @@
-package ru.practicum.shareit.exceptions;
+package ru.practicum.shareit.exceptions.notfound;
 
 public class UserNotFoundException extends EntityNotFoundException {
     public UserNotFoundException(long userId) {

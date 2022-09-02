@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.ItemNotFoundException;
-import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
+import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -42,7 +42,8 @@ public class ItemServiceImpWithRepository implements ItemService {
 
     @Override
     public ItemDto getItemById(long userId, long itemId) {
-        return itemRepository.findByOwner_IdAndId(userId, itemId).map(Mapper::toDto)
+        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        return itemRepository.findById(itemId).map(Mapper::toDto)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
     }
 
@@ -62,6 +63,6 @@ public class ItemServiceImpWithRepository implements ItemService {
 
     @Override
     public List<ItemDto> findItemByName(String text) {
-        return itemRepository.findItemByNameAndDesc(text).stream().map(Mapper::toDto).collect(Collectors.toList());
+        return itemRepository.search(text).stream().map(Mapper::toDto).collect(Collectors.toList());
     }
 }
