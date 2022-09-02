@@ -7,6 +7,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.validation.Create;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -25,32 +26,32 @@ public class BookingController {
 
     @PostMapping
     BookingDto addBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                          @RequestBody @Validated(Create.class) BookingDto bookingDto) {
-
+                          @RequestBody @Valid BookingDto bookingDto) {
+        return bookingService.addBooking(userId, bookingDto);
     }
 
     @PatchMapping("/{bookingId}")
     BookingDto approveStatus(@RequestHeader("X-Sharer-User-Id") Long userId,
                             @PathVariable(name = "bookingId") Long bookingId,
                             @RequestParam(name = "approved") Boolean approved) {
-
+        return null;
     }
 
-    @GetMapping
+    @GetMapping("/{bookingId}")
     BookingDto getBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
                           @PathVariable(name = "bookingId") Long bookingId) {
-
+        return bookingService.getBookingByUserIdAndBookingId(userId, bookingId);
     }
 
     @GetMapping
     List<BookingDto> getUserBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
                                 @RequestParam(name = "state", defaultValue = "ALL", required = false) String state) {
-
+        return null;
     }
 
     @GetMapping("/owner")
     List<BookingDto> getBookingForUsersItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                                 @RequestParam(name = "state", defaultValue = "ALL", required = false) String state) {
-
+        return null;
     }
 }

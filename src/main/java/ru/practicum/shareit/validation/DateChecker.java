@@ -4,21 +4,17 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.time.LocalDateTime;
 
-public class DateChecker implements ConstraintValidator<IsText, BookingDto> {
-
-
+public class DateChecker implements ConstraintValidator<CheckBookingDate, BookingDto> {
 
     @Override
-    public void initialize(IsText constraintAnnotation) {
+    public void initialize(CheckBookingDate constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
     public boolean isValid(BookingDto bookingDto, ConstraintValidatorContext constraintValidatorContext) {
-        if (bookingDto.getStart().isBefore(bookingDto.getEnd()) && bookingDto.getStart().isAfter(LocalDateTime.now())
-                && bookingDto.getEnd().isAfter(LocalDateTime.now())) {
+        if (bookingDto.getStart().isBefore(bookingDto.getEnd())) {
             return true;
         }
         return false;

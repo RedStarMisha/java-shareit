@@ -1,6 +1,7 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.model;
 
 import lombok.Data;
+import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -30,7 +31,8 @@ public class Booking {
     private User booker;
 
     @Enumerated(EnumType.ORDINAL)
-    @CollectionTable(name = "booking_status", joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "name")
-    private BookingStatus status;
+    //@OneToOne
+    //@CollectionTable(name = "booking_status", joinColumns = @JoinColumn(name = "id"))
+    @Column(columnDefinition = "int default 1")
+    private BookingStatus status;// = BookingStatus.WAITING;
 }

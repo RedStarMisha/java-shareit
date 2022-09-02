@@ -8,6 +8,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validation.CheckBookingDate;
 import ru.practicum.shareit.validation.Create;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
  */
 @AllArgsConstructor
 @Data
-@CheckBookingDate(groups = Create.class)
+@CheckBookingDate
 public class BookingDto {
 
     private long id;
@@ -24,9 +25,12 @@ public class BookingDto {
 
     private LocalDateTime end;
 
-    private Item item;
+    @NotNull
+    private Long itemId;
 
-    private User booker;
+    private Long bookerId;
 
     private BookingStatus status;
+
+    private String itemName;
 }

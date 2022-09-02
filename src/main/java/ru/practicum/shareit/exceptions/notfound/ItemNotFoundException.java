@@ -1,4 +1,4 @@
-package ru.practicum.shareit.exceptions;
+package ru.practicum.shareit.exceptions.notfound;
 
 public class ItemNotFoundException extends EntityNotFoundException {
     public ItemNotFoundException(long itemId) {

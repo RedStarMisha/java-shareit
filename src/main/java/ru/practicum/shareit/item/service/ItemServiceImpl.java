@@ -3,7 +3,7 @@ package ru.practicum.shareit.item.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.ItemNotFoundException;
+import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.storage.ItemStorage;
@@ -29,7 +29,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     public ItemServiceImpl(ItemStorage itemStorage, @Qualifier("storage") UserService userService,
-                           RequestService requestService) {
+                           @Qualifier("repository") RequestService requestService) {
         this.itemStorage = itemStorage;
         this.userService = userService;
         this.requestService = requestService;
