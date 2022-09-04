@@ -3,9 +3,12 @@ package ru.practicum.shareit.item.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.Mapper;
 import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemForResponse;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.requests.service.RequestService;
 import ru.practicum.shareit.requests.model.ItemRequest;
@@ -29,7 +32,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     public ItemServiceImpl(ItemStorage itemStorage, @Qualifier("storage") UserService userService,
-                           @Qualifier("repository") RequestService requestService) {
+               @Qualifier("repository") RequestService requestService) {
         this.itemStorage = itemStorage;
         this.userService = userService;
         this.requestService = requestService;
@@ -45,9 +48,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getItemById(long userId, long itemId) {
+    public ItemForResponse getItemById(long userId, long itemId) {
         userService.getUserById(userId);
-        return itemStorage.getItemById(userId, itemId).map(ItemMapper::toItemDto)
+        return itemStorage.getItemById(userId, itemId).map(item -> Mapper.toResponseEntity(item, null, null, null))
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
     }
 
@@ -62,14 +65,21 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getUserItems(long userId) {
+    public List<ItemForResponse> getUserItems(long userId) {
         userService.getUserById(userId);
-        return itemStorage.getUserItems(userId).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return itemStorage.getUserItems(userId).stream().map( item ->
+                Mapper.toResponseEntity(item, null, null, null)
+        ).collect(Collectors.toList());
     }
 
     @Override
     public List<ItemDto> findItemByName(String text) {
         return itemStorage.findItemByName(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentDto addComment(long authorId, long itemId, CommentDto commentDto) {
+        return null;
     }
 
 }

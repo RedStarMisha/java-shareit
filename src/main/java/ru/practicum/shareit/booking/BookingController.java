@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingForResponse;
+import ru.practicum.shareit.booking.dto.BookingNew;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.validation.Create;
 
@@ -31,27 +33,27 @@ public class BookingController {
     }
 
     @PatchMapping("/{bookingId}")
-    BookingDto approveStatus(@RequestHeader("X-Sharer-User-Id") Long userId,
+    BookingNew approveStatus(@RequestHeader("X-Sharer-User-Id") Long userId,
                             @PathVariable(name = "bookingId") Long bookingId,
                             @RequestParam(name = "approved") Boolean approved) {
-        return null;
+        return bookingService.approveStatus(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
-    BookingDto getBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+    BookingForResponse getBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
                           @PathVariable(name = "bookingId") Long bookingId) {
         return bookingService.getBookingByUserIdAndBookingId(userId, bookingId);
     }
 
     @GetMapping
-    List<BookingDto> getUserBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+    List<BookingForResponse> getUserBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
                                 @RequestParam(name = "state", defaultValue = "ALL", required = false) String state) {
-        return null;
+        return bookingService.getUserBookingByState(userId, state);
     }
 
     @GetMapping("/owner")
-    List<BookingDto> getBookingForUsersItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    List<BookingForResponse> getBookingForUsersItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                                 @RequestParam(name = "state", defaultValue = "ALL", required = false) String state) {
-        return null;
+        return bookingService.getBookingForUsersItem(userId, state);
     }
 }
