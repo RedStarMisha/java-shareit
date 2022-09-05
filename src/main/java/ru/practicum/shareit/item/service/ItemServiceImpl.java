@@ -3,11 +3,10 @@ package ru.practicum.shareit.item.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.Mapper;
 import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.comments.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoEntry;
 import ru.practicum.shareit.item.dto.ItemForResponse;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.requests.service.RequestService;
@@ -18,10 +17,9 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.item.ItemMapper.toItem;
-import static ru.practicum.shareit.item.ItemMapper.toItemDto;
+import static ru.practicum.shareit.item.ItemMapper.*;
 import static ru.practicum.shareit.requests.RequestMapper.toRequest;
-import static ru.practicum.shareit.Mapper.toEntity;
+import static ru.practicum.shareit.user.UserMapper.toEntity;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -32,49 +30,48 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     public ItemServiceImpl(ItemStorage itemStorage, @Qualifier("storage") UserService userService,
-               @Qualifier("repository") RequestService requestService) {
+                           @Qualifier("repository") RequestService requestService) {
         this.itemStorage = itemStorage;
         this.userService = userService;
         this.requestService = requestService;
     }
 
     @Override
-    public ItemDto addItem(long userId, ItemDto itemDto) {
+    public ItemDtoEntry addItem(long userId, ItemDtoEntry itemDtoEntry) {
         final User user = toEntity(userService.getUserById(userId));
-        itemDto.setId(idCounter++);
-        final ItemRequest itemRequest = itemDto.getRequest() != null ?
-                toRequest(userId, requestService.getRequest(userId, itemDto.getRequest())) : null;
-        return toItemDto(itemStorage.addItem(userId, toItem(user, itemDto, itemRequest)));
+        itemDtoEntry.setId(idCounter++);
+        final ItemRequest itemRequest = itemDtoEntry.getRequest() != null ?
+                toRequest(userId, requestService.getRequest(userId, itemDtoEntry.getRequest())) : null;
+        return toCommentDto(itemStorage.addItem(userId, toItem(user, itemDtoEntry, itemRequest)));
     }
 
     @Override
     public ItemForResponse getItemById(long userId, long itemId) {
         userService.getUserById(userId);
-        return itemStorage.getItemById(userId, itemId).map(item -> Mapper.toResponseEntity(item, null, null, null))
+        return itemStorage.getItemById(userId, itemId).map(item -> toResponseItem(item, null, null, null))
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
     }
 
     @Override
-    public ItemDto updateItem(long userId, long itemId, ItemDto itemDto) {
+    public ItemDtoEntry updateItem(long userId, long itemId, ItemDtoEntry itemDtoEntry) {
         userService.getUserById(userId);
-        itemDto.setId(itemId);
-        final ItemRequest itemRequest = itemDto.getRequest() != null ?
-                toRequest(userId, requestService.getRequest(userId, itemDto.getRequest())) : null;
-        return itemStorage.updateItem(userId, toItem(null, itemDto, itemRequest))
-                .map(ItemMapper::toItemDto).orElseThrow(() -> new ItemNotFoundException(itemId));
+        itemDtoEntry.setId(itemId);
+        final ItemRequest itemRequest = itemDtoEntry.getRequest() != null ?
+                toRequest(userId, requestService.getRequest(userId, itemDtoEntry.getRequest())) : null;
+        return itemStorage.updateItem(userId, toItem(null, itemDtoEntry, itemRequest)).map(ItemMapper::toCommentDto)
+                .orElseThrow(() -> new ItemNotFoundException(itemId));
     }
 
     @Override
     public List<ItemForResponse> getUserItems(long userId) {
         userService.getUserById(userId);
-        return itemStorage.getUserItems(userId).stream().map( item ->
-                Mapper.toResponseEntity(item, null, null, null)
-        ).collect(Collectors.toList());
+        return itemStorage.getUserItems(userId).stream().map(item ->
+                toResponseItem(item, null, null, null)).collect(Collectors.toList());
     }
 
     @Override
-    public List<ItemDto> findItemByName(String text) {
-        return itemStorage.findItemByName(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+    public List<ItemDtoEntry> findItemByName(String text) {
+        return itemStorage.findItemByName(text).stream().map(ItemMapper::toCommentDto).collect(Collectors.toList());
     }
 
     @Override

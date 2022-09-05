@@ -8,7 +8,7 @@ import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.dto.ItemForResponse;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.validation.Create;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoEntry;
 import ru.practicum.shareit.validation.Update;
 
 import javax.validation.Valid;
@@ -28,14 +28,14 @@ public class ItemController {
     }
 
     @PostMapping
-    ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                    @RequestBody @Validated(Create.class) ItemDto item) {
+    ItemDtoEntry addItem(@RequestHeader("X-Sharer-User-Id") long userId,
+                         @RequestBody @Validated(Create.class) ItemDtoEntry item) {
         return itemService.addItem(userId, item);
     }
 
     @PatchMapping("/{itemId}")
-    ItemDto editItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
-                     @RequestBody @Validated(Update.class) ItemDto item) {
+    ItemDtoEntry editItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
+                          @RequestBody @Validated(Update.class) ItemDtoEntry item) {
         return itemService.updateItem(userId, itemId, item);
     }
 
@@ -51,8 +51,8 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    List<ItemDto> findItemByName(@RequestHeader("X-Sharer-User-Id") long userId,
-                                 @RequestParam(name = "text") String text) {
+    List<ItemDtoEntry> findItemByName(@RequestHeader("X-Sharer-User-Id") long userId,
+                                      @RequestParam(name = "text") String text) {
         return text.isBlank() ? Collections.emptyList() : itemService.findItemByName(text);
     }
 

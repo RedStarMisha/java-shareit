@@ -3,12 +3,12 @@ package ru.practicum.shareit.booking.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.Mapper;
+import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingForResponse;
-import ru.practicum.shareit.booking.dto.BookingNew;
+import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoEntry;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.exceptions.notfound.BookingNotFoundException;
@@ -23,6 +23,8 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.practicum.shareit.booking.BookingMapper.toResponseEntity;
 
 @Service
 @Slf4j
@@ -41,27 +43,24 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDto addBooking(long userId, BookingDto bookingDto) {
+    public BookingDtoResponse addBooking(long userId, BookingDtoEntry bookingDtoEntry) {
         User booker = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        Item item = itemRepository.findById(bookingDto.getItemId())
-                .orElseThrow(() -> new ItemNotFoundException(bookingDto.getItemId()));
+        Item item = itemRepository.findById(bookingDtoEntry.getItemId())
+                .orElseThrow(() -> new ItemNotFoundException(bookingDtoEntry.getItemId()));
         if (item.getId() == userId) {
             throw new BookingCreationException("Пользователь не может арендовать вещь сам у себя");
         }
         if (item.getAvailable().equals(false)) {
             throw new ItemAvailableException(item.getId());
         }
-        if (bookingDto.getStart().isBefore(LocalDateTime.now())) {
-            throw new BookingDateException("Некорректные даты бронирования");
-        }
-        Booking booking = Mapper.toEntity(booker, item, bookingDto);
+        Booking booking = BookingMapper.toEntity(booker, item, bookingDtoEntry);
         booking = bookingRepository.save(booking);
-        log.warn("Бронирование добавлено " + booking);
-        return Mapper.toDto(booking);
+        log.info("Бронирование добавлено " + booking);
+        return toResponseEntity(booking);
     }
 
     @Override
-    public BookingNew approveStatus(long userId, long bookingId, boolean approved) {
+    public BookingDtoResponse approveStatus(long userId, long bookingId, boolean approved) {
         Booking booking = bookingRepository.findByIdAndItem_Owner_Id(bookingId, userId)
                 .orElseThrow(() -> new BookingNotFoundException(bookingId));
         BookingStatus bookingStatus = approved == true ? BookingStatus.APPROVED : BookingStatus.REJECTED;
@@ -71,7 +70,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(bookingStatus);
         booking = bookingRepository.save(booking);
         log.warn("Бронирование обновлено " + booking);
-        return Mapper.toResponseEntity(booking);
+        return toResponseEntity(booking);
     }
 
     @Override
@@ -84,8 +83,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingForResponse> getUserBookingByState(long bookerId, String state) {
         userRepository.findById(bookerId).orElseThrow(() -> new UserNotFoundException(bookerId));
         List<BookingForResponse> list = bookingRepository.findAllByBooker_IdOrderByStartDesc(bookerId);
-        list = filterByState(list, state);
-        return list;
+        return filterByState(list, state);
     }
 
     @Override

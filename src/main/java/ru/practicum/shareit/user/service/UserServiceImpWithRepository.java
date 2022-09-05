@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
-import ru.practicum.shareit.Mapper;
+import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.storage.UserRepository;
@@ -25,16 +25,16 @@ public class UserServiceImpWithRepository implements UserService {
 
     @Override @Transactional
     public UserDto addUser(UserDto userDto) {
-        User user = userRepository.save(Mapper.toEntity(userDto));
-        return Mapper.toDto(user);
+        User user = userRepository.save(UserMapper.toEntity(userDto));
+        return UserMapper.toDto(user);
     }
 
     @Override @Transactional
     public UserDto updateUser(long userId, UserDto userDto) {
         return userRepository.findById(userId).map(user -> {
-            User user1 = Mapper.updateFromDto(user, userDto);
+            User user1 = UserMapper.updateFromDto(user, userDto);
             userRepository.save(user1);
-            return Mapper.toDto(user1);
+            return UserMapper.toDto(user1);
         }).orElseThrow(() -> new UserNotFoundException(userId));
     }
 
@@ -45,12 +45,12 @@ public class UserServiceImpWithRepository implements UserService {
 
     @Override
     public UserDto getUserById(long userId) {
-        return userRepository.findById(userId).map(Mapper::toDto)
+        return userRepository.findById(userId).map(UserMapper::toDto)
                 .orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     @Override
     public List<UserDto> getAllUSer() {
-        return userRepository.findAll().stream().map(Mapper::toDto).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(UserMapper::toDto).collect(Collectors.toList());
     }
 }
