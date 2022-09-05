@@ -78,7 +78,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingForResponse getBookingByUserIdAndBookingId(long userId, long bookingId) {
-        return bookingRepository.findBookingNew(userId, bookingId)
+        return bookingRepository.findBooking(userId, bookingId)
                 .orElseThrow(() -> new BookingNotFoundException(bookingId));
     }
 
