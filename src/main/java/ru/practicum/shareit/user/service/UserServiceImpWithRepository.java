@@ -13,7 +13,8 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service @Qualifier("storage")
+@Service
+@Qualifier("storage")
 public class UserServiceImpWithRepository implements UserService {
 
     private final UserRepository userRepository;
@@ -23,13 +24,15 @@ public class UserServiceImpWithRepository implements UserService {
         this.userRepository = userRepository;
     }
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public UserDto addUser(UserDto userDto) {
         User user = userRepository.save(UserMapper.toEntity(userDto));
         return UserMapper.toDto(user);
     }
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public UserDto updateUser(long userId, UserDto userDto) {
         return userRepository.findById(userId).map(user -> {
             User user1 = UserMapper.updateFromDto(user, userDto);

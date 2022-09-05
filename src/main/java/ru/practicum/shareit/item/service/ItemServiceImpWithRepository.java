@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.booking.model.Booking;
@@ -50,6 +51,7 @@ public class ItemServiceImpWithRepository implements ItemService {
 
 
     @Override
+    @Transactional
     public ItemDtoEntry addItem(long userId, ItemDtoEntry itemDtoEntry) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         ItemRequest itemRequest = requestStorage.getRequest(userId, itemDtoEntry.getRequest()).orElse(null);
@@ -59,6 +61,7 @@ public class ItemServiceImpWithRepository implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDtoEntry updateItem(long userId, long itemId, ItemDtoEntry itemDtoEntry) {
         return itemRepository.findByOwner_IdAndId(userId, itemId).map(item -> {
             Item item1 = updateFromDto(item, itemDtoEntry);

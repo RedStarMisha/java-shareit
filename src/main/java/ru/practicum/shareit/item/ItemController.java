@@ -22,6 +22,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
+
     @Autowired
     public ItemController(@Qualifier("repository") ItemService itemService) {
         this.itemService = itemService;

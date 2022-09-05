@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingForResponse;
@@ -43,6 +44,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDtoResponse addBooking(long userId, BookingDtoEntry bookingDtoEntry) {
         User booker = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Item item = itemRepository.findById(bookingDtoEntry.getItemId())
@@ -60,6 +62,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDtoResponse approveStatus(long userId, long bookingId, boolean approved) {
         Booking booking = bookingRepository.findByIdAndItem_Owner_Id(bookingId, userId)
                 .orElseThrow(() -> new BookingNotFoundException(bookingId));
@@ -101,7 +104,7 @@ public class BookingServiceImpl implements BookingService {
         if (state.equals(BookingStatus.WAITING.name()) || state.equals(BookingStatus.REJECTED.name())) {
             return list.stream().filter(booking -> booking.getStatus().name().equals(state))
                     .collect(Collectors.toList());
-        } else if (state.equals("CURRENT")){
+        } else if (state.equals("CURRENT")) {
             return list.stream().filter(b -> b.getStart().isBefore(LocalDateTime.now())
                     && b.getEnd().isAfter(LocalDateTime.now())).collect(Collectors.toList());
         } else if (state.equals("PAST")) {
