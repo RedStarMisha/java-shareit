@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping(path = "/users")
 public class UserController {
     private final UserService userService;
+
     @Autowired
     public UserController(@Qualifier("storage") UserService userService) {
         this.userService = userService;
