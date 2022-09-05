@@ -1,8 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.validation.Create;
 import ru.practicum.shareit.validation.IsText;
 import ru.practicum.shareit.validation.Update;
@@ -14,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * // TODO .
  */
 @Data
-public class ItemDto {
+public class ItemDtoEntry {
 
     private Long id;
 
@@ -24,7 +22,6 @@ public class ItemDto {
 
     @NotBlank(groups = {Create.class})
     @IsText(groups = Update.class)
-
     private String description;
 
     @NotNull(groups = {Create.class})

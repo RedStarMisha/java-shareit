@@ -14,8 +14,8 @@ import ru.practicum.shareit.exceptions.notfound.EntityNotFoundException;
 @Slf4j
 public class MyExceptionHandler {
 
-    @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity<String> entityNotFoundException(EntityNotFoundException e) {
+    @ExceptionHandler({EntityNotFoundException.class, BookingCreationException.class})
+    public ResponseEntity<String> entityNotFoundException(RuntimeException e) {
         log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
@@ -32,20 +32,9 @@ public class MyExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler({BookingCreationException.class})
-    public ResponseEntity<String> bookingCreationException(BookingCreationException e) {
-        log.error(e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler({ItemAvailableException.class, BookingDateException.class, CommentCreationException.class})
+    @ExceptionHandler({ItemAvailableException.class, CommentCreationException.class,
+            BookingStatusException.class})
     public ResponseEntity<String> itemAvailableException(RuntimeException e) {
-        log.error(e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler({BookingStatusException.class})
-    public ResponseEntity<String> bookingStatusException(BookingStatusException e) {
         log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
