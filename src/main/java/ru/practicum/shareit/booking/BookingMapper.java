@@ -22,6 +22,7 @@ public class BookingMapper {
     }
 
     public static BookingDtoResponse toResponseEntity(Booking booking) {
+
         return new BookingDtoResponse(booking.getId(), booking.getStart(), booking.getEnd(), booking.getItem(),
                 booking.getBooker(), booking.getStatus());
     }
