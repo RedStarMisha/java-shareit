@@ -7,7 +7,7 @@ import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDtoEntry;
-import ru.practicum.shareit.item.dto.ItemForResponse;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.requests.service.RequestService;
 import ru.practicum.shareit.requests.model.ItemRequest;
@@ -42,11 +42,11 @@ public class ItemServiceImpl implements ItemService {
         itemDtoEntry.setId(idCounter++);
         final ItemRequest itemRequest = itemDtoEntry.getRequest() != null ?
                 toRequest(userId, requestService.getRequest(userId, itemDtoEntry.getRequest())) : null;
-        return toCommentDto(itemStorage.addItem(userId, toItem(user, itemDtoEntry, itemRequest)));
+        return toItemDto(itemStorage.addItem(userId, toItem(user, itemDtoEntry, itemRequest)));
     }
 
     @Override
-    public ItemForResponse getItemById(long userId, long itemId) {
+    public ItemDto getItemById(long userId, long itemId) {
         userService.getUserById(userId);
         return itemStorage.getItemById(userId, itemId).map(item -> toResponseItem(item, null, null, null))
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
@@ -58,12 +58,12 @@ public class ItemServiceImpl implements ItemService {
         itemDtoEntry.setId(itemId);
         final ItemRequest itemRequest = itemDtoEntry.getRequest() != null ?
                 toRequest(userId, requestService.getRequest(userId, itemDtoEntry.getRequest())) : null;
-        return itemStorage.updateItem(userId, toItem(null, itemDtoEntry, itemRequest)).map(ItemMapper::toCommentDto)
+        return itemStorage.updateItem(userId, toItem(null, itemDtoEntry, itemRequest)).map(ItemMapper::toItemDto)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
     }
 
     @Override
-    public List<ItemForResponse> getUserItems(long userId) {
+    public List<ItemDto> getUserItems(long userId) {
         userService.getUserById(userId);
         return itemStorage.getUserItems(userId).stream().map(item ->
                 toResponseItem(item, null, null, null)).collect(Collectors.toList());
@@ -71,7 +71,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDtoEntry> findItemByName(String text) {
-        return itemStorage.findItemByName(text).stream().map(ItemMapper::toCommentDto).collect(Collectors.toList());
+        return itemStorage.findItemByName(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     @Override

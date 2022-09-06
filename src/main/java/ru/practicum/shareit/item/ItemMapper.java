@@ -7,7 +7,7 @@ import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDtoEntry;
-import ru.practicum.shareit.item.dto.ItemForResponse;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
@@ -27,7 +27,7 @@ public class ItemMapper {
         return item;
     }
 
-    public static ItemDtoEntry toCommentDto(Item item) {
+    public static ItemDtoEntry toItemDto(Item item) {
         ItemDtoEntry itemDtoEntry = new ItemDtoEntry();
         itemDtoEntry.setId(item.getId());
         itemDtoEntry.setName(item.getName());
@@ -37,18 +37,18 @@ public class ItemMapper {
         return itemDtoEntry;
     }
 
-    public static ItemForResponse toResponseItem(Item item, @Nullable BookingShort last, @Nullable BookingShort next,
-                                                 @Nullable List<CommentDto> comments) {
-        ItemForResponse itemForResponse = new ItemForResponse();
-        itemForResponse.setId(item.getId());
-        itemForResponse.setName(item.getName());
-        itemForResponse.setDescription(item.getDescription());
-        itemForResponse.setAvailable(item.getAvailable());
-        itemForResponse.setRequest(item.getRequest() == null ? null : item.getRequest().getId());
-        itemForResponse.setLastBooking(last == null ? null : last);
-        itemForResponse.setNextBooking(next == null ? null : next);
-        itemForResponse.setComments(comments);
-        return itemForResponse;
+    public static ItemDto toResponseItem(Item item, @Nullable BookingShort last, @Nullable BookingShort next,
+                                         @Nullable List<CommentDto> comments) {
+        ItemDto itemDto = new ItemDto();
+        itemDto.setId(item.getId());
+        itemDto.setName(item.getName());
+        itemDto.setDescription(item.getDescription());
+        itemDto.setAvailable(item.getAvailable());
+        itemDto.setRequest(item.getRequest() == null ? null : item.getRequest().getId());
+        itemDto.setLastBooking(last == null ? null : last);
+        itemDto.setNextBooking(next == null ? null : next);
+        itemDto.setComments(comments);
+        return itemDto;
     }
 
     public static Item updateFromDto(Item item, ItemDtoEntry itemDtoEntry) {

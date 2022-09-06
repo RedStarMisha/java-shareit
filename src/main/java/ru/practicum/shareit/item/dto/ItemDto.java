@@ -1,12 +1,14 @@
 package ru.practicum.shareit.item.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.item.comments.CommentDto;
 import java.util.List;
 
 @Data
-public class ItemForResponse {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ItemDto {
 
     private Long id;
 
