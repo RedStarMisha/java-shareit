@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.comments;
 
 import lombok.Data;
+import ru.practicum.shareit.LocalDateTimeConverter;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -26,5 +27,6 @@ public class Comment {
     private User author;
 
     @Column(name = "created")
+    @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime created = LocalDateTime.now();
 }
