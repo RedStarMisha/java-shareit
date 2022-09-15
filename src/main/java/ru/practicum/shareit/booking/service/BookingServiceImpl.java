@@ -67,12 +67,12 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto approveStatus(long userId, long bookingId, boolean approved) {
         Booking booking = bookingRepository.findByIdAndItem_Owner_Id(bookingId, userId)
                 .orElseThrow(() -> new BookingNotFoundException(bookingId));
-        BookingStatus bookingStatus = approved == true ? BookingStatus.APPROVED : BookingStatus.REJECTED;
+        BookingStatus bookingStatus = approved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
         if (booking.getStatus() != BookingStatus.WAITING) {
             throw new BookingStatusException(bookingStatus.name());
         }
         booking.setStatus(bookingStatus);
-        booking = bookingRepository.save(booking);
+        //booking = bookingRepository.save(booking);
         log.warn("Бронирование обновлено " + booking);
         return toBookingDto(booking);
     }
