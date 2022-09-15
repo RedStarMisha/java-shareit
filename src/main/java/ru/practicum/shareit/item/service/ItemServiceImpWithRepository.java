@@ -41,7 +41,7 @@ public class ItemServiceImpWithRepository implements ItemService {
 
     private final UserRepository userRepository;
 
-    private final RequestStorage requestStorage;
+    //private final RequestStorage requestStorage;
 
     @Lazy
     private final BookingRepository bookingRepository;
