@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.notfound.RequestNotFoundException;
 import ru.practicum.shareit.requests.RequestMapper;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
+import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
 import ru.practicum.shareit.requests.storage.RequestStorage;
 import ru.practicum.shareit.user.service.UserService;
 import java.util.List;
@@ -28,14 +29,14 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public ItemRequestDto addRequest(long userId, ItemRequestDto itemRequestDto) {
+    public ItemRequestDtoEntry addRequest(long userId, ItemRequestDtoEntry itemRequestDto) {
         userService.getUserById(userId);
         itemRequestDto.setId(requestId++);
         return toRequestDto(requestStorage.addRequest(userId, toRequest(userId, itemRequestDto)));
     }
 
     @Override
-    public ItemRequestDto updateRequest(long userId, long requestId, ItemRequestDto itemRequestDto) {
+    public ItemRequestDtoEntry updateRequest(long userId, long requestId, ItemRequestDtoEntry itemRequestDto) {
         userService.getUserById(userId);
         return requestStorage.updateRequest(userId, requestId, toRequest(userId, itemRequestDto))
                 .map(RequestMapper::toRequestDto).orElseThrow(() -> new RequestNotFoundException(requestId));
@@ -49,7 +50,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public ItemRequestDto getRequest(long userId, long requestId) {
+    public ItemRequestDtoEntry getRequest(long userId, long requestId) {
         userService.getUserById(userId);
         return requestStorage.getRequest(userId, requestId).map(RequestMapper::toRequestDto)
                 .orElseThrow(() -> new RequestNotFoundException(requestId));

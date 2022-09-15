@@ -4,22 +4,23 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
+import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
+import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RequestMapper {
 
-    public static ItemRequestDto toRequestDto(ItemRequest itemRequest) {
-        return new ItemRequestDto(itemRequest.getId(), itemRequest.getDescription());
+    public static ItemRequestDtoEntry toRequestDto(ItemRequest itemRequest) {
+        return new ItemRequestDto(itemRequest.getId(), itemRequest.getDescription(), itemRequest.getRequestor().getId(),
+                );
     }
 
-    public static ItemRequest toRequest(long requestor, ItemRequestDto itemRequestDto) {
-        final ItemRequest itemRequest = new ItemRequest();
-        itemRequest.setId(itemRequest.getId());
+    public static ItemRequest toRequest(User requestor, ItemRequestDtoEntry itemRequestDtoEntry) {
+        ItemRequest itemRequest = new ItemRequest();
         itemRequest.setRequestor(requestor);
-        itemRequest.setDescription(itemRequestDto.getDescription());
-        itemRequest.setCreated(LocalDateTime.now());
+        itemRequest.setDescription(itemRequestDtoEntry.getDescription());
         return itemRequest;
     }
 
