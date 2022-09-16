@@ -3,6 +3,7 @@ package ru.practicum.shareit.exceptionhandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -26,12 +27,6 @@ public class MyExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler({Throwable.class})
-    public ResponseEntity<String> unknownException(Throwable e) {
-        log.error(e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @ExceptionHandler({ItemAvailableException.class, CommentCreationException.class,
             BookingStatusException.class})
     public ResponseEntity<String> itemAvailableException(RuntimeException e) {
@@ -46,11 +41,23 @@ public class MyExceptionHandler {
         return new ResponseEntity<>(e.getParameter().getExecutable().toGenericString(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({BindException.class})
+    public ResponseEntity<String> validateExceptionTwo(BindException e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({UnknownBookingStateException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse unknownStateBooking(UnknownBookingStateException e) {
         log.error(e.getMessage());
         return new ExceptionResponse(e.getMessage());
+    }
+
+    @ExceptionHandler({Throwable.class})
+    public ResponseEntity<String> unknownException(Throwable e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

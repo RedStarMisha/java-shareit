@@ -11,6 +11,7 @@ import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exceptions.CommentCreationException;
 import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
+import ru.practicum.shareit.exceptions.notfound.RequestNotFoundException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.comments.Comment;
@@ -21,6 +22,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.requests.model.ItemRequest;
+import ru.practicum.shareit.requests.storage.RequestRepository;
 import ru.practicum.shareit.requests.storage.RequestStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
@@ -41,7 +43,7 @@ public class ItemServiceImpWithRepository implements ItemService {
 
     private final UserRepository userRepository;
 
-    //private final RequestStorage requestStorage;
+    private final RequestRepository requestRepository;
 
     @Lazy
     private final BookingRepository bookingRepository;
@@ -53,7 +55,13 @@ public class ItemServiceImpWithRepository implements ItemService {
     @Transactional
     public ItemDtoEntry addItem(long userId, ItemDtoEntry itemDtoEntry) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        ItemRequest itemRequest = requestStorage.getRequest(userId, itemDtoEntry.getRequest()).orElse(null);
+        ItemRequest itemRequest;
+        if (itemDtoEntry.getRequestId() != null) {
+            itemRequest = requestRepository.findById(itemDtoEntry.getRequestId())
+                    .orElseThrow(() -> new RequestNotFoundException(itemDtoEntry.getRequestId()));
+        } else {
+            itemRequest = null;
+        }
         Item item = itemRepository.save(toItem(owner, itemDtoEntry, itemRequest));
         log.info(item.toString());
         return toItemDto(item);

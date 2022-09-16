@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
+import ru.practicum.shareit.exceptions.notfound.RequestNotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDtoEntry;
@@ -11,6 +12,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.requests.service.RequestService;
 import ru.practicum.shareit.requests.model.ItemRequest;
+import ru.practicum.shareit.requests.storage.RequestStorage;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.model.User;
 
@@ -25,23 +27,28 @@ import static ru.practicum.shareit.user.UserMapper.toEntity;
 public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
     private final UserService userService;
-    private final RequestService requestService;
+    private final RequestStorage requestStorage;
     private long idCounter = 1;
 
     @Autowired
     public ItemServiceImpl(ItemStorage itemStorage, @Qualifier("storage") UserService userService,
-                           @Qualifier("repository") RequestService requestService) {
+                           RequestStorage requestStorage) {
         this.itemStorage = itemStorage;
         this.userService = userService;
-        this.requestService = requestService;
+        this.requestStorage = requestStorage;
     }
 
     @Override
     public ItemDtoEntry addItem(long userId, ItemDtoEntry itemDtoEntry) {
         final User user = toEntity(userService.getUserById(userId));
         itemDtoEntry.setId(idCounter++);
-        final ItemRequest itemRequest = itemDtoEntry.getRequest() != null ?
-                toRequest(userId, requestService.getRequest(userId, itemDtoEntry.getRequest())) : null;
+        ItemRequest itemRequest;
+        if (itemDtoEntry.getRequestId() != null) {
+            itemRequest = requestStorage.getRequest(itemDtoEntry.getRequestId())
+                    .orElseThrow(()-> new RequestNotFoundException(itemDtoEntry.getRequestId()));
+        } else {
+            itemRequest = null;
+        }
         return toItemDto(itemStorage.addItem(userId, toItem(user, itemDtoEntry, itemRequest)));
     }
 
@@ -56,8 +63,13 @@ public class ItemServiceImpl implements ItemService {
     public ItemDtoEntry updateItem(long userId, long itemId, ItemDtoEntry itemDtoEntry) {
         userService.getUserById(userId);
         itemDtoEntry.setId(itemId);
-        final ItemRequest itemRequest = itemDtoEntry.getRequest() != null ?
-                toRequest(userId, requestService.getRequest(userId, itemDtoEntry.getRequest())) : null;
+        ItemRequest itemRequest;
+        if (itemDtoEntry.getRequestId() != null) {
+            itemRequest = requestStorage.getRequest(itemDtoEntry.getRequestId())
+                    .orElseThrow(()-> new RequestNotFoundException(itemDtoEntry.getRequestId()));
+        } else {
+            itemRequest = null;
+        }
         return itemStorage.updateItem(userId, toItem(null, itemDtoEntry, itemRequest)).map(ItemMapper::toItemDto)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
     }

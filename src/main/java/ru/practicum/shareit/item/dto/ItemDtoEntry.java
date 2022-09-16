@@ -27,5 +27,5 @@ public class ItemDtoEntry {
     @NotNull(groups = {Create.class})
     private Boolean available;
 
-    private Long request;
+    private Long requestId;
 }
