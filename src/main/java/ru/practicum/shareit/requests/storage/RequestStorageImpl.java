@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.requests.model.ItemRequest;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -42,10 +43,14 @@ public class RequestStorageImpl implements RequestStorage {
     }
 
     @Override
-    public Optional<ItemRequest> getRequest(long userId, Long requestId) {
-        if (requestId != null && storage.get(userId).containsKey(requestId)) {
-            log.info("запрос {} отправлен", storage.get(userId).get(requestId));
-            return Optional.of(storage.get(userId).get(requestId));
+    public Optional<ItemRequest> getRequest(Long requestId) {
+        if (requestId != null) {
+            log.info("запрос {} отправлен", requestId);
+            return storage.values()
+                    .stream()
+                    .map(Map::values)
+                    .flatMap(itemRequests -> itemRequests.stream()).filter(itemRequest -> itemRequest.getId() == requestId)
+                    .findFirst();
         }
         log.warn("запрос с id = {} не найден", requestId);
         return Optional.empty();

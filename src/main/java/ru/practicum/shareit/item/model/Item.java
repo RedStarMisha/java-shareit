@@ -29,7 +29,7 @@ public class Item {
     @Column(name = "available")
     private Boolean available;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     private ItemRequest request;
 }

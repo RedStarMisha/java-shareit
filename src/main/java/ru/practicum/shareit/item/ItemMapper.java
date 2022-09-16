@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDtoEntry;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemShort;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
@@ -33,8 +34,12 @@ public class ItemMapper {
         itemDtoEntry.setName(item.getName());
         itemDtoEntry.setDescription(item.getDescription());
         itemDtoEntry.setAvailable(item.getAvailable());
-        itemDtoEntry.setRequest(item.getRequest() == null ? null : item.getRequest().getId());
+        itemDtoEntry.setRequestId(item.getRequest() == null ? null : item.getRequest().getId());
         return itemDtoEntry;
+    }
+
+    public static ItemShort toItemShort(Item item) {
+        return new ItemShort(item.getId(), item.getName(), item.getOwner().getId());
     }
 
     public static ItemDto toResponseItem(Item item, @Nullable BookingShort last, @Nullable BookingShort next,

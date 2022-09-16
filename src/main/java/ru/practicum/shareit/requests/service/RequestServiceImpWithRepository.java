@@ -1,9 +1,14 @@
 package ru.practicum.shareit.requests.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.notfound.RequestNotFoundException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
 import ru.practicum.shareit.requests.RequestMapper;
 import ru.practicum.shareit.requests.model.ItemRequest;
@@ -14,8 +19,10 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @Qualifier("repository")
 @AllArgsConstructor(onConstructor_ =@Autowired)
 public class RequestServiceImpWithRepository implements RequestService {
@@ -25,9 +32,30 @@ public class RequestServiceImpWithRepository implements RequestService {
     private final RequestRepository requestRepository;
     @Override
     public ItemRequestDto addRequest(long userId, ItemRequestDtoEntry itemRequestDtoEntry) {
-        User requestor = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException(userId));
+        User requestor = checkUser(userId);
+        log.info("Проверку прошло");
         ItemRequest itemRequest = requestRepository.save(RequestMapper.toRequest(requestor, itemRequestDtoEntry));
         return RequestMapper.toRequestDto(itemRequest);
+    }
+
+    @Override
+    public ItemRequestDto getRequest(long requestId) {
+        return requestRepository.findById(requestId)
+                .map(itemRequest -> RequestMapper.toRequestDto(itemRequest))
+                .orElseThrow(()-> new RequestNotFoundException(requestId));
+    }
+
+    @Override
+    public List<ItemRequestDto> getUserRequests(long userId) {
+        checkUser(userId);
+        return requestRepository.findAllByRequestor_IdOrderByCreatedDesc(userId).stream()
+                .map(RequestMapper::toRequestDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ItemRequestDto> getRequests(Integer from, Integer size) {
+        return requestRepository.findAll(makePageParam(from, size)).stream().map(RequestMapper::toRequestDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -40,13 +68,12 @@ public class RequestServiceImpWithRepository implements RequestService {
 
     }
 
-    @Override
-    public ItemRequestDto getRequest(long userId, long requestId) {
-        return null;
+    private User checkUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException(userId));
     }
 
-    @Override
-    public List<ItemRequestDto> getUserRequests(long userId) {
-        return null;
+    private Pageable makePageParam(int from, int size) {
+        Sort sort = Sort.by("created").descending();
+        return PageRequest.of(from, size, sort);
     }
 }

@@ -23,7 +23,7 @@ public class ItemRequest {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "requestor")
+    //@Column(name = "requestor")
     @OneToOne(fetch = FetchType.LAZY)
     private User requestor;
 
@@ -31,7 +31,7 @@ public class ItemRequest {
     @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime created = LocalDateTime.now();
 
-    @OneToMany(mappedBy = )
-    @JoinColumn(name = "item_id")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id") // тут нужно указыва
     private Set<Item> items;
 }
