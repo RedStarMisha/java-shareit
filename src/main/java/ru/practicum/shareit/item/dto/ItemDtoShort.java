@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * // TODO .
  */
 @Data
-public class ItemDtoEntry {
+public class ItemDtoShort {
 
     private Long id;
 

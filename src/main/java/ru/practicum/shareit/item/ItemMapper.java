@@ -6,9 +6,8 @@ import org.springframework.lang.Nullable;
 import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.comments.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDtoEntry;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemShort;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
@@ -18,28 +17,24 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
 
-    public static Item toItem(User owner, ItemDtoEntry itemDtoEntry, @Nullable ItemRequest itemRequest) {
+    public static Item toItem(User owner, ItemDtoShort itemDtoShort, @Nullable ItemRequest itemRequest) {
         Item item = new Item();
-        item.setName(itemDtoEntry.getName());
-        item.setDescription(itemDtoEntry.getDescription());
+        item.setName(itemDtoShort.getName());
+        item.setDescription(itemDtoShort.getDescription());
         item.setOwner(owner);
         item.setRequest(itemRequest == null ? null : itemRequest);
-        item.setAvailable(itemDtoEntry.getAvailable());
+        item.setAvailable(itemDtoShort.getAvailable());
         return item;
     }
 
-    public static ItemDtoEntry toItemDto(Item item) {
-        ItemDtoEntry itemDtoEntry = new ItemDtoEntry();
-        itemDtoEntry.setId(item.getId());
-        itemDtoEntry.setName(item.getName());
-        itemDtoEntry.setDescription(item.getDescription());
-        itemDtoEntry.setAvailable(item.getAvailable());
-        itemDtoEntry.setRequestId(item.getRequest() == null ? null : item.getRequest().getId());
-        return itemDtoEntry;
-    }
-
-    public static ItemShort toItemShort(Item item) {
-        return new ItemShort(item.getId(), item.getName(), item.getOwner().getId());
+    public static ItemDtoShort toItemDto(Item item) {
+        ItemDtoShort itemDtoShort = new ItemDtoShort();
+        itemDtoShort.setId(item.getId());
+        itemDtoShort.setName(item.getName());
+        itemDtoShort.setDescription(item.getDescription());
+        itemDtoShort.setAvailable(item.getAvailable());
+        itemDtoShort.setRequestId(item.getRequest() == null ? null : item.getRequest().getId());
+        return itemDtoShort;
     }
 
     public static ItemDto toResponseItem(Item item, @Nullable BookingShort last, @Nullable BookingShort next,
@@ -56,15 +51,15 @@ public class ItemMapper {
         return itemDto;
     }
 
-    public static Item updateFromDto(Item item, ItemDtoEntry itemDtoEntry) {
-        if (itemDtoEntry.getName() != null) {
-            item.setName(itemDtoEntry.getName());
+    public static Item updateFromDto(Item item, ItemDtoShort itemDtoShort) {
+        if (itemDtoShort.getName() != null) {
+            item.setName(itemDtoShort.getName());
         }
-        if (itemDtoEntry.getDescription() != null) {
-            item.setDescription(itemDtoEntry.getDescription());
+        if (itemDtoShort.getDescription() != null) {
+            item.setDescription(itemDtoShort.getDescription());
         }
-        if (itemDtoEntry.getAvailable() != null) {
-            item.setAvailable(itemDtoEntry.getAvailable());
+        if (itemDtoShort.getAvailable() != null) {
+            item.setAvailable(itemDtoShort.getAvailable());
         }
         return item;
     }

@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
@@ -9,7 +12,9 @@ import javax.persistence.*;
 /**
  * // Item class in storage .
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"id"})
 @Entity
 @Table(name = "items")
 public class Item {

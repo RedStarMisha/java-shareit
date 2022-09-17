@@ -55,7 +55,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public ItemRequestDto getRequest(long requestId) {
+    public ItemRequestDto getRequest(long userId, long requestId) {
+        userStorage.getUserById(userId).orElseThrow(()-> new UserNotFoundException(userId));
         return requestStorage.getRequest(requestId).map(RequestMapper::toRequestDto)
                 .orElseThrow(() -> new RequestNotFoundException(requestId));
     }
@@ -68,7 +69,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getRequests(Integer from, Integer size) {
+    public List<ItemRequestDto> getRequests(long userId, Integer from, Integer size) {
         return null;
     }
 }

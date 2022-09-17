@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.PaginationParametersException;
 import ru.practicum.shareit.exceptions.notfound.RequestNotFoundException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
 import ru.practicum.shareit.requests.RequestMapper;
@@ -39,7 +40,8 @@ public class RequestServiceImpWithRepository implements RequestService {
     }
 
     @Override
-    public ItemRequestDto getRequest(long requestId) {
+    public ItemRequestDto getRequest(long userId, long requestId) {
+        checkUser(userId);
         return requestRepository.findById(requestId)
                 .map(itemRequest -> RequestMapper.toRequestDto(itemRequest))
                 .orElseThrow(()-> new RequestNotFoundException(requestId));
@@ -53,8 +55,11 @@ public class RequestServiceImpWithRepository implements RequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getRequests(Integer from, Integer size) {
-        return requestRepository.findAll(makePageParam(from, size)).stream().map(RequestMapper::toRequestDto)
+    public List<ItemRequestDto> getRequests(long userId, Integer from, Integer size) {
+        checkUser(userId);
+        return requestRepository.findAllByOtherUser(userId, makePageParam(from, size)).stream()
+                .filter(itemRequest -> itemRequest.getRequestor().getId() != userId)
+                .map(RequestMapper::toRequestDto)
                 .collect(Collectors.toList());
     }
 
@@ -65,15 +70,18 @@ public class RequestServiceImpWithRepository implements RequestService {
 
     @Override
     public void deleteRequest(long userId, long requestId) {
-
     }
 
     private User checkUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException(userId));
     }
 
-    private Pageable makePageParam(int from, int size) {
+    public static Pageable makePageParam(int from, int size) {
+        if (from < 0 || size < 1) {
+            throw new PaginationParametersException("Неверные параметры страницы");
+        }
+        int page = from / size;
         Sort sort = Sort.by("created").descending();
-        return PageRequest.of(from, size, sort);
+        return PageRequest.of(page, size, sort);
     }
 }

@@ -1,6 +1,8 @@
 package ru.practicum.shareit.requests.storage;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.requests.model.ItemRequest;
 
@@ -12,5 +14,9 @@ public interface RequestRepository extends JpaRepository<ItemRequest, Long> {
     Optional<ItemRequest> findByIdAndAndRequestor_Id(long requestId, long requestorId);
 
     List<ItemRequest> findAllByRequestor_IdOrderByCreatedDesc(long requestorId);
+
+    @Query("select ir from ItemRequest ir where ir.requestor.id <> ?1")
+    List<ItemRequest> findAllByOtherUser(long userId, Pageable pageable);
+
 
 }
