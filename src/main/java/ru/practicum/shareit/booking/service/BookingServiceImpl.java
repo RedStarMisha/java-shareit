@@ -2,6 +2,9 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
@@ -72,7 +75,7 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingStatusException(bookingStatus.name());
         }
         booking.setStatus(bookingStatus);
-        //booking = bookingRepository.save(booking);
+        booking = bookingRepository.save(booking);
         log.warn("Бронирование обновлено " + booking);
         return toBookingDto(booking);
     }
@@ -83,19 +86,17 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new BookingNotFoundException(bookingId));
     }
 
-
-
     @Override
-    public List<BookingDto> getUserBookingByState(long bookerId, String state) {
+    public List<BookingDto> getUserBookingByState(long bookerId, String state, int from, int size) {
         userRepository.findById(bookerId).orElseThrow(() -> new UserNotFoundException(bookerId));
-        List<BookingDto> list = bookingRepository.findAllByBooker_IdOrderByStartDesc(bookerId);
+        List<BookingDto> list = bookingRepository.findAllByBooker_IdOrderByStartDesc(bookerId, makePageParam(from, size));
         return filterByState(list, state);
     }
 
     @Override
-    public List<BookingDto> getBookingForUsersItem(long ownerId, String state) {
+    public List<BookingDto> getBookingForUsersItem(long ownerId, String state, int from, int size) {
         userRepository.findById(ownerId).orElseThrow(() -> new UserNotFoundException(ownerId));
-        List<BookingDto> list = bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(ownerId);
+        List<BookingDto> list = bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(ownerId, makePageParam(from, size));
         return filterByState(list, state);
     }
 
@@ -132,5 +133,14 @@ public class BookingServiceImpl implements BookingService {
                 break;
         }
         return list.stream().filter(filter).collect(Collectors.toList());
+    }
+
+    public static Pageable makePageParam(int from, int size) {
+        if (from < 0 || size < 1) {
+            throw new PaginationParametersException("Неверные параметры страницы");
+        }
+        int page = from / size;
+        Sort sort = Sort.by("id").ascending();
+        return PageRequest.of(page, size, sort);
     }
 }

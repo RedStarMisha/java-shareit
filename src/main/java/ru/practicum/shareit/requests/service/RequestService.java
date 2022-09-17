@@ -13,9 +13,9 @@ public interface RequestService {
 
     void deleteRequest(long userId, long requestId);
 
-    ItemRequestDto getRequest(long requestId);
+    ItemRequestDto getRequest(long userId, long requestId);
 
     List<ItemRequestDto> getUserRequests(long userId);
 
-    List<ItemRequestDto> getRequests(Integer from, Integer size);
+    List<ItemRequestDto> getRequests(long userId, Integer from, Integer size);
 }

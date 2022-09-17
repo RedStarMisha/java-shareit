@@ -3,14 +3,14 @@ package ru.practicum.shareit.requests;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.ItemMapper;
-import ru.practicum.shareit.item.dto.ItemShort;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,11 +30,11 @@ public class RequestMapper {
         return itemRequest;
     }
 
-    public static Set<ItemShort> toItemShortSet(Set<Item> items) {
+    public static Set<ItemDtoShort> toItemShortSet(Set<Item> items) {
         if (items == null) {
             return Collections.emptySet();
         }
-        return items.stream().map(ItemMapper::toItemShort).collect(Collectors.toSet());
+        return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toSet());
     }
 
 

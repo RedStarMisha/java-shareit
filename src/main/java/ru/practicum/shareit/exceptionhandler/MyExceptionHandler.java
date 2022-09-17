@@ -28,7 +28,7 @@ public class MyExceptionHandler {
     }
 
     @ExceptionHandler({ItemAvailableException.class, CommentCreationException.class,
-            BookingStatusException.class})
+            BookingStatusException.class, PaginationParametersException.class})
     public ResponseEntity<String> itemAvailableException(RuntimeException e) {
         log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -2,7 +2,7 @@ package ru.practicum.shareit.requests.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.practicum.shareit.item.dto.ItemShort;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -19,6 +19,6 @@ public class ItemRequestDto {
 
     private LocalDateTime created;
 
-    private Set<ItemShort> items;
+    private Set<ItemDtoShort> items;
 
 }

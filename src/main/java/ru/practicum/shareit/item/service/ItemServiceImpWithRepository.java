@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exceptions.CommentCreationException;
+import ru.practicum.shareit.exceptions.PaginationParametersException;
 import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.notfound.RequestNotFoundException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
@@ -17,13 +21,12 @@ import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.comments.CommentRepository;
-import ru.practicum.shareit.item.dto.ItemDtoEntry;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.storage.RequestRepository;
-import ru.practicum.shareit.requests.storage.RequestStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -37,6 +40,7 @@ import static ru.practicum.shareit.item.ItemMapper.*;
 @Qualifier("repository")
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ItemServiceImpWithRepository implements ItemService {
 
     private final ItemRepository itemRepository;
@@ -53,25 +57,26 @@ public class ItemServiceImpWithRepository implements ItemService {
 
     @Override
     @Transactional
-    public ItemDtoEntry addItem(long userId, ItemDtoEntry itemDtoEntry) {
+    public ItemDtoShort addItem(long userId, ItemDtoShort itemDtoShort) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         ItemRequest itemRequest;
-        if (itemDtoEntry.getRequestId() != null) {
-            itemRequest = requestRepository.findById(itemDtoEntry.getRequestId())
-                    .orElseThrow(() -> new RequestNotFoundException(itemDtoEntry.getRequestId()));
+        if (itemDtoShort.getRequestId() != null) {
+            itemRequest = requestRepository.findById(itemDtoShort.getRequestId())
+                    .orElseThrow(() -> new RequestNotFoundException(itemDtoShort.getRequestId()));
+
         } else {
             itemRequest = null;
         }
-        Item item = itemRepository.save(toItem(owner, itemDtoEntry, itemRequest));
+        Item item = itemRepository.save(toItem(owner, itemDtoShort, itemRequest));
         log.info(item.toString());
         return toItemDto(item);
     }
 
     @Override
     @Transactional
-    public ItemDtoEntry updateItem(long userId, long itemId, ItemDtoEntry itemDtoEntry) {
+    public ItemDtoShort updateItem(long userId, long itemId, ItemDtoShort itemDtoShort) {
         return itemRepository.findByOwner_IdAndId(userId, itemId).map(item -> {
-            Item item1 = updateFromDto(item, itemDtoEntry);
+            Item item1 = updateFromDto(item, itemDtoShort);
             itemRepository.save(item1);
             return toItemDto(item1);
         }).orElseThrow(() -> new ItemNotFoundException(itemId));
@@ -86,15 +91,16 @@ public class ItemServiceImpWithRepository implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getUserItems(long userId) {
-        List<Item> items = itemRepository.findAllByOwner_IdOrderById(userId);
+    public List<ItemDto> getUserItems(long userId, int from, int size) {
+        List<Item> items = itemRepository.findAllByOwner_IdOrderById(userId, makePageParam(from, size));
         return items.stream().map(i -> toResponseItem(i, getLastBooking(i.getId(), i.getOwner().getId()),
                 getNextBooking(i.getId(), i.getOwner().getId()), getComments(i.getId()))).collect(Collectors.toList());
     }
 
     @Override
-    public List<ItemDtoEntry> findItemByName(String text) {
-        return itemRepository.search(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+    public List<ItemDtoShort> findItemByName(String text, int from, int size) {
+        return itemRepository.search(text, makePageParam(from, size)).stream().map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -121,5 +127,14 @@ public class ItemServiceImpWithRepository implements ItemService {
 
     private List<CommentDto> getComments(long itemId) {
         return commentRepository.findAllByItem_Id(itemId).stream().map(ItemMapper::toCommentDto).collect(Collectors.toList());
+    }
+
+    public static Pageable makePageParam(int from, int size) {
+        if (from < 0 || size < 1) {
+            throw new PaginationParametersException("Неверные параметры страницы");
+        }
+        int page = from / size;
+        Sort sort = Sort.by("id").ascending();
+        return PageRequest.of(page, size, sort);
     }
 }

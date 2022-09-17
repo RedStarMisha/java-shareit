@@ -8,7 +8,7 @@ import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.validation.Create;
-import ru.practicum.shareit.item.dto.ItemDtoEntry;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.validation.Update;
 
 import javax.validation.Valid;
@@ -29,14 +29,14 @@ public class ItemController {
     }
 
     @PostMapping
-    ItemDtoEntry addItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                         @RequestBody @Validated(Create.class) ItemDtoEntry item) {
+    ItemDtoShort addItem(@RequestHeader("X-Sharer-User-Id") long userId,
+                         @RequestBody @Validated(Create.class) ItemDtoShort item) {
         return itemService.addItem(userId, item);
     }
 
     @PatchMapping("/{itemId}")
-    ItemDtoEntry editItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
-                          @RequestBody @Validated(Update.class) ItemDtoEntry item) {
+    ItemDtoShort editItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
+                          @RequestBody @Validated(Update.class) ItemDtoShort item) {
         return itemService.updateItem(userId, itemId, item);
     }
 
@@ -47,14 +47,18 @@ public class ItemController {
     }
 
     @GetMapping
-    List<ItemDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.getUserItems(userId);
+    List<ItemDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") long userId,
+                                @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        return itemService.getUserItems(userId, from, size);
     }
 
     @GetMapping("/search")
-    List<ItemDtoEntry> findItemByName(@RequestHeader("X-Sharer-User-Id") long userId,
-                                      @RequestParam(name = "text") String text) {
-        return text.isBlank() ? Collections.emptyList() : itemService.findItemByName(text);
+    List<ItemDtoShort> findItemByName(@RequestHeader("X-Sharer-User-Id") long userId,
+                                      @RequestParam(name = "text") String text,
+                                      @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                      @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        return text.isBlank() ? Collections.emptyList() : itemService.findItemByName(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
