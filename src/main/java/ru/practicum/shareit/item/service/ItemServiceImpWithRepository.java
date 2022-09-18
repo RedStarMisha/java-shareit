@@ -59,13 +59,11 @@ public class ItemServiceImpWithRepository implements ItemService {
     @Transactional
     public ItemDtoShort addItem(long userId, ItemDtoShort itemDtoShort) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        ItemRequest itemRequest;
+        ItemRequest itemRequest = null;   //интересно так вообще делают?
         if (itemDtoShort.getRequestId() != null) {
             itemRequest = requestRepository.findById(itemDtoShort.getRequestId())
                     .orElseThrow(() -> new RequestNotFoundException(itemDtoShort.getRequestId()));
 
-        } else {
-            itemRequest = null;
         }
         Item item = itemRepository.save(toItem(owner, itemDtoShort, itemRequest));
         log.info(item.toString());
@@ -126,7 +124,8 @@ public class ItemServiceImpWithRepository implements ItemService {
     }
 
     private List<CommentDto> getComments(long itemId) {
-        return commentRepository.findAllByItem_Id(itemId).stream().map(ItemMapper::toCommentDto).collect(Collectors.toList());
+        return commentRepository.findAllByItem_Id(itemId).stream().map(ItemMapper::toCommentDto)
+                .collect(Collectors.toList());
     }
 
     public static Pageable makePageParam(int from, int size) {
