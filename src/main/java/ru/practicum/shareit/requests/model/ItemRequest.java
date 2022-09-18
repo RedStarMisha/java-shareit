@@ -31,7 +31,6 @@ public class ItemRequest {
     @Column(name = "description")
     private String description;
 
-    //@Column(name = "requestor")
     @OneToOne(fetch = FetchType.LAZY)
     private User requestor;
 

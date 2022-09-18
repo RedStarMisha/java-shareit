@@ -25,17 +25,18 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Qualifier("repository")
-@AllArgsConstructor(onConstructor_ =@Autowired)
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class RequestServiceImpWithRepository implements RequestService {
 
     private final UserRepository userRepository;
 
     private final RequestRepository requestRepository;
+
     @Override
     public ItemRequestDto addRequest(long userId, ItemRequestDtoEntry itemRequestDtoEntry) {
         User requestor = checkUser(userId);
-        log.info("Проверку прошло");
         ItemRequest itemRequest = requestRepository.save(RequestMapper.toRequest(requestor, itemRequestDtoEntry));
+        log.info("Запрос на вещь {} добавлен", itemRequestDtoEntry);
         return RequestMapper.toRequestDto(itemRequest);
     }
 
@@ -44,7 +45,7 @@ public class RequestServiceImpWithRepository implements RequestService {
         checkUser(userId);
         return requestRepository.findById(requestId)
                 .map(itemRequest -> RequestMapper.toRequestDto(itemRequest))
-                .orElseThrow(()-> new RequestNotFoundException(requestId));
+                .orElseThrow(() -> new RequestNotFoundException(requestId));
     }
 
     @Override
@@ -73,7 +74,7 @@ public class RequestServiceImpWithRepository implements RequestService {
     }
 
     private User checkUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException(userId));
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     public static Pageable makePageParam(int from, int size) {
