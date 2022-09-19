@@ -62,10 +62,10 @@ public class RequestServiceTest {
 
     @Test
     void makePageable() {
-        assertThat(ReflectionTestUtils.invokeMethod(requestService, "makePageParam", 0, 3)
-                .equals(PageRequest.of(0, 3 , Sort.by("created").descending())), is(true));
-        assertThat(ReflectionTestUtils.invokeMethod(requestService, "makePageParam", 3, 3)
-                .equals(PageRequest.of(1, 3 , Sort.by("created").descending())), is(true));
+        assertThat(ReflectionTestUtils.invokeMethod(requestService, "makePageParam", 0, 3),
+                is(PageRequest.of(0, 3 , Sort.by("created").descending())));
+        assertThat(ReflectionTestUtils.invokeMethod(requestService, "makePageParam", 3, 3),
+               is(PageRequest.of(1, 3 , Sort.by("created").descending())));
     }
 
     @Test

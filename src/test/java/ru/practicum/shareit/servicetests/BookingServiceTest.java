@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
-import static ru.practicum.shareit.booking.BookingMapper.*;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoEntry;
@@ -26,6 +25,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static ru.practicum.shareit.TestUtil.*;
+import static ru.practicum.shareit.booking.BookingMapper.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -1,5 +1,6 @@
 package ru.practicum.shareit;
 
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.model.ItemRequest;
@@ -11,7 +12,7 @@ import java.util.Set;
 
 public class TestUtil {
 
-    public static ItemRequest makeItemRequest(long id, String description, User requestor, Set<Item> items) {
+    public static ItemRequest makeItemRequest(Long id, String description, User requestor, Set<Item> items) {
         ItemRequest itemRequest = new ItemRequest();
         itemRequest.setId(id);
         itemRequest.setDescription(description);
