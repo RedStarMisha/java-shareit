@@ -1,12 +1,15 @@
 package ru.practicum.shareit.servicetests;
 
-import org.junit.jupiter.api.BeforeAll;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.TestUtil;
 import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.item.service.ItemServiceImpWithRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -16,7 +19,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.Optional;
 
-import static ru.practicum.shareit.servicetests.TestUtil.makeItemRequest;
+import static ru.practicum.shareit.TestUtil.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ItemServiceTest {
@@ -40,15 +43,30 @@ public class ItemServiceTest {
         user = TestUtil.makeUser(1L, "petya", "xx@ya.ru");
     }
 
-    void addFirstItemTest() {
-        Mockito.when(userRepository.findById(1L))
-                .thenReturn(Optional.of(user));
-        Mockito.when(requestRepository.findById(1L))
-                .thenReturn(Optional.of(makeItemRequest(1L, "Нужен банан", user, null)));
+    @Test
+    void shouldUpdateItemWithoutRequest() {
+        Long userId = 1L;
+        Long itemId = 1L;
 
+        Mockito.when(itemRepository.findByOwner_IdAndId(userId, itemId))
+                .thenReturn(Optional.of(makeItem(itemId, "Банан", "Он желтый", user, true, null)));
+        ItemDtoShort itemDtoShort = itemService.updateItem(userId, itemId, makeItemDtoShort(null, "Огурец",
+                "Он зеленый", null, null));
+
+        assertThat(itemDtoShort.getId(), is(itemId));
+        assertThat(itemDtoShort.getAvailable(), is(true));
+        assertThat(itemDtoShort.getRequestId(), nullValue());
+        assertThat(itemDtoShort.getName(), is("Огурец"));
+        assertThat(itemDtoShort.getDescription(), is("Он зеленый"));
     }
 
     private ItemDtoShort makeItemDtoShort(Long id, String name, String description, Boolean available, Long requestId) {
-
+        ItemDtoShort itemDtoShort = new ItemDtoShort();
+        itemDtoShort.setId(id);
+        itemDtoShort.setName(name);
+        itemDtoShort.setDescription(description);
+        itemDtoShort.setAvailable(available);
+        itemDtoShort.setRequestId(requestId);
+        return itemDtoShort;
     }
 }

@@ -49,11 +49,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingDto addBooking(long userId, BookingDtoEntry bookingDtoEntry) {
-        log.warn("Мой ДТО {}", bookingDtoEntry);
         User booker = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Item item = itemRepository.findById(bookingDtoEntry.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException(bookingDtoEntry.getItemId()));
-        if (item.getId() == userId) {
+        if (item.getOwner().getId() == userId) {
             throw new BookingCreationException("Пользователь не может арендовать вещь сам у себя");
         }
         if (item.getAvailable().equals(false)) {
@@ -70,12 +69,12 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto approveStatus(long userId, long bookingId, boolean approved) {
         Booking booking = bookingRepository.findByIdAndItem_Owner_Id(bookingId, userId)
                 .orElseThrow(() -> new BookingNotFoundException(bookingId));
-        BookingStatus bookingStatus = approved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
         if (booking.getStatus() != BookingStatus.WAITING) {
-            throw new BookingStatusException(bookingStatus.name());
+            throw new BookingStatusException("У аренды нельзя изменить статус");
         }
+        BookingStatus bookingStatus = approved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
         booking.setStatus(bookingStatus);
-        booking = bookingRepository.save(booking);
+        bookingRepository.save(booking);
         log.warn("Бронирование обновлено " + booking);
         return toBookingDto(booking);
     }
@@ -98,15 +97,6 @@ public class BookingServiceImpl implements BookingService {
         userRepository.findById(ownerId).orElseThrow(() -> new UserNotFoundException(ownerId));
         List<BookingDto> list = bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(ownerId, makePageParam(from, size));
         return filterByState(list, state);
-    }
-
-    @Override
-    public BookingState saveState(String s) {
-        try {
-            return BookingState.valueOf(s);
-        } catch (Throwable e) {
-            throw new UnknownBookingStateException(s);
-        }
     }
 
     private List<BookingDto> filterByState(List<BookingDto> list, String state) {

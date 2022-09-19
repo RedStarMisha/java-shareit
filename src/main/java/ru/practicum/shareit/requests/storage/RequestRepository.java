@@ -11,12 +11,9 @@ import java.util.Optional;
 
 @Repository
 public interface RequestRepository extends JpaRepository<ItemRequest, Long> {
-    Optional<ItemRequest> findByIdAndAndRequestor_Id(long requestId, long requestorId);
-
     List<ItemRequest> findAllByRequestor_IdOrderByCreatedDesc(long requestorId);
 
     @Query("select ir from ItemRequest ir where ir.requestor.id <> ?1")
     List<ItemRequest> findAllByOtherUser(long userId, Pageable pageable);
-
 
 }

@@ -35,5 +35,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     // for comment
     Optional<Booking> findFirstByItem_IdAndBooker_IdAndEndBefore(long itemId, long bookerId, LocalDateTime date);
 
+    @Query("select b " +
+            "from Booking b" +
+            " where b.item.id=?1 and b.status=?2 and " +
+            "((?3 between b.start and b.end) or (?4 between b.start and b.end) or ((b.start > ?3) and (b.end < ?4)))")
+    List<Booking> findBookingAtThisTime(long itemId, LocalDateTime start, LocalDateTime end);
+
 
 }

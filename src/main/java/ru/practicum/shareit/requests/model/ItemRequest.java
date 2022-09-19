@@ -1,10 +1,7 @@
 package ru.practicum.shareit.requests.model;
 
 import com.querydsl.core.annotations.QueryEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.shareit.LocalDateTimeConverter;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
@@ -21,6 +18,7 @@ import java.util.Set;
 @Setter
 @EqualsAndHashCode(of = {"id"})
 @Entity
+@ToString
 @Table(name = "requests")
 
 public class ItemRequest {
