@@ -11,9 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
+import ru.practicum.shareit.TestUtil;
 import ru.practicum.shareit.exceptions.PaginationParametersException;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
 import ru.practicum.shareit.requests.service.RequestServiceImpWithRepository;
@@ -25,7 +24,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import java.util.Optional;
-import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 public class RequestServiceTest {
@@ -54,6 +52,7 @@ public class RequestServiceTest {
         Mockito.when(requestRepository.save(Mockito.any()))
                 .thenReturn(TestUtil.makeItemRequest(1L, itemRequestDtoEntry.getDescription(), user, null));
         ItemRequestDto itemRequestDto = requestService.addRequest(1L, itemRequestDtoEntry);
+
         assertThat(itemRequestDto.getId(), is(1L));
         assertThat(itemRequestDto.getRequestor(), is(user.getId()));
         assertThat(itemRequestDto.getDescription(), is(itemRequestDtoEntry.getDescription()));
