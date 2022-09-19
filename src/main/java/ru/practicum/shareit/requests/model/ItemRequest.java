@@ -24,7 +24,7 @@ import java.util.Set;
 public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "description")
     private String description;
