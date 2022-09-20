@@ -13,8 +13,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.practicum.shareit.TestUtil;
 import ru.practicum.shareit.exceptions.PaginationParametersException;
+import ru.practicum.shareit.requests.RequestMapper;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
+import ru.practicum.shareit.requests.service.RequestService;
 import ru.practicum.shareit.requests.service.RequestServiceImpWithRepository;
 import ru.practicum.shareit.requests.storage.RequestRepository;
 import ru.practicum.shareit.user.model.User;
@@ -22,6 +24,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 
 import java.util.Optional;
 
@@ -34,25 +37,28 @@ public class RequestServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    @InjectMocks
-    private RequestServiceImpWithRepository requestService;
-
-    User user;
+    private RequestService requestService;
 
     @BeforeEach
     void create() {
-        user = TestUtil.makeUser(1L, "petya", "xx@ya.ru");
+        requestService = new RequestServiceImpWithRepository(userRepository, requestRepository);
     }
 
     @Test
     void addFirstRequest() {
-        Mockito.when(userRepository.findById(1L))
-                .thenReturn(Optional.of(user));
+        Long userId = 1L;
         ItemRequestDtoEntry itemRequestDtoEntry = new ItemRequestDtoEntry("Запрос на банан");
+        User user = TestUtil.makeUser(userId, "petya", "xx@ya.ru");
+
+        Mockito.when(userRepository.findById(userId))
+                .thenReturn(Optional.of(user));
         Mockito.when(requestRepository.save(Mockito.any()))
                 .thenReturn(TestUtil.makeItemRequest(1L, itemRequestDtoEntry.getDescription(), user, null));
-        ItemRequestDto itemRequestDto = requestService.addRequest(1L, itemRequestDtoEntry);
 
+        ItemRequestDto itemRequestDto = requestService.addRequest(userId, itemRequestDtoEntry);
+
+        Mockito.verify(requestRepository, Mockito.times(1))
+                .save(RequestMapper.toRequest(userRepository.findById(1L).get(), itemRequestDtoEntry));
         assertThat(itemRequestDto.getId(), is(1L));
         assertThat(itemRequestDto.getRequestor(), is(user.getId()));
         assertThat(itemRequestDto.getDescription(), is(itemRequestDtoEntry.getDescription()));

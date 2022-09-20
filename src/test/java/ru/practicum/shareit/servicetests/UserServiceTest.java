@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
+import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.service.UserServiceImpWithRepository;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -23,13 +24,13 @@ public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    @InjectMocks
-    private UserServiceImpWithRepository userService;
+    private UserService userService;
 
     private UserDto userDto;
 
     @BeforeEach
     private void create() {
+        userService = new UserServiceImpWithRepository(userRepository);
         userDto = new UserDto(1L, "petya", "boy@ya.ru");
     }
 
@@ -38,7 +39,9 @@ public class UserServiceTest {
         UserDto update = new UserDto(null, "dasha", "girl@ya.ru");
         Mockito.when(userRepository.findById(1L))
                 .thenReturn(makeUser(1L, "petya", "boy@ya.ru"));
+
         UserDto updatedUser = userService.updateUser(1L, update);
+
         assertThat(updatedUser.getId(), is(1L));
         assertThat(updatedUser.getName(), is(update.getName()));
         assertThat(updatedUser.getEmail(), is(update.getEmail()));
