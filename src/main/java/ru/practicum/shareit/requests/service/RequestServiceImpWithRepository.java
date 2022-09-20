@@ -59,7 +59,7 @@ public class RequestServiceImpWithRepository implements RequestService {
     public List<ItemRequestDto> getRequests(long userId, Integer from, Integer size) {
         checkUser(userId);
         return requestRepository.findAllByOtherUser(userId, makePageParam(from, size)).stream()
-                .filter(itemRequest -> itemRequest.getRequestor().getId() != userId)
+                //.filter(itemRequest -> itemRequest.getRequestor().getId() != userId)
                 .map(RequestMapper::toRequestDto)
                 .collect(Collectors.toList());
     }

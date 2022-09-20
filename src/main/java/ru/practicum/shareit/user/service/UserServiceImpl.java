@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.EmailAlreadyExistException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
@@ -19,6 +20,7 @@ import static ru.practicum.shareit.user.UserMapper.toEntity;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Qualifier("storage")
 public class UserServiceImpl implements UserService {
 
     private final UserStorage userStorage;

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exceptions.EmailAlreadyExistException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Qualifier("storage")
+@Qualifier("repository")
 public class UserServiceImpWithRepository implements UserService {
 
     private final UserRepository userRepository;
@@ -27,7 +28,12 @@ public class UserServiceImpWithRepository implements UserService {
     @Override
     @Transactional
     public UserDto addUser(UserDto userDto) {
-        User user = userRepository.save(UserMapper.toEntity(userDto));
+        User user;
+        try {
+            user = userRepository.save(UserMapper.toEntity(userDto));
+        } catch (RuntimeException e) {
+            throw new EmailAlreadyExistException(userDto.getEmail());
+        }
         return UserMapper.toDto(user);
     }
 

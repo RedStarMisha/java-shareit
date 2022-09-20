@@ -2,7 +2,6 @@ package ru.practicum.shareit.repositorytest;
 
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -25,17 +24,12 @@ import static org.hamcrest.Matchers.*;
 
 @DataJpaTest
 @AllArgsConstructor(onConstructor_ = @Autowired)
-@Sql(scripts = "/schema.sql")
+@Sql(scripts = "/create_four_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class BookingRepositoryTest {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
-
-    @BeforeEach
-    @Sql(scripts = "/data.sql")
-    void setUp() {
-    }
 
     @Test
     void shouldGetBookingByIdAndOwnerAndBookerId() {
@@ -56,7 +50,5 @@ public class BookingRepositoryTest {
 
         Optional<BookingDto> nullBooking = bookingRepository.findBooking(3L, 1L);
         Assertions.assertTrue(nullBooking.isEmpty());
-
-
     }
 }

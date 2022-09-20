@@ -1,6 +1,5 @@
 package ru.practicum.shareit.repositorytest;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -20,7 +19,7 @@ import static ru.practicum.shareit.TestUtil.makeItemRequest;
 import java.util.List;
 
 @DataJpaTest
-@Sql(scripts = "/schema.sql")
+@Sql(scripts = "/create_four_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class ItemRequestRepositoryTest {
 
     @Autowired
@@ -32,13 +31,6 @@ public class ItemRequestRepositoryTest {
     @Autowired
     private RequestRepository requestRepository;
 
-    @BeforeEach
-    @Sql(scripts = "/data.sql")
-    void setUp() {
-
-    }
-
-    private User user;
 
     @Test
     void shouldGetAllRequestCreatedByOtherUsers() {

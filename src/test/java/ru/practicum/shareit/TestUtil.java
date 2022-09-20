@@ -1,12 +1,19 @@
 package ru.practicum.shareit;
 
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.validation.Create;
+import ru.practicum.shareit.validation.IsText;
+import ru.practicum.shareit.validation.Update;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -49,5 +56,14 @@ public class TestUtil {
         booking.setBooker(booker);
         booking.setItem(item);
         return booking;
+    }
+
+    public static ItemDtoShort makeItemDtoShort(String name, String description, Boolean available, @Nullable Long requestId) {
+        ItemDtoShort itemDtoShort = new ItemDtoShort();
+        itemDtoShort.setName(name);
+        itemDtoShort.setDescription(description);
+        itemDtoShort.setAvailable(available);
+        itemDtoShort.setRequestId(requestId);
+        return itemDtoShort;
     }
 }

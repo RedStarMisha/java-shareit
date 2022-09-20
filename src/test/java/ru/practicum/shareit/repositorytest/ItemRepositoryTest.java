@@ -1,7 +1,6 @@
 package ru.practicum.shareit.repositorytest;
 
 import lombok.AllArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -22,16 +21,11 @@ import static ru.practicum.shareit.TestUtil.makeItem;
 
 @DataJpaTest
 @AllArgsConstructor(onConstructor_ = @Autowired)
-@Sql(scripts = "/schema.sql")
+@Sql(scripts = "/create_four_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class ItemRepositoryTest {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-
-    @BeforeEach
-    @Sql(scripts = "/data.sql")
-    void setUp() {
-    }
 
     @Test
     void shouldSearchItemByNameAndDescription() {
