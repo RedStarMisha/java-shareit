@@ -54,6 +54,9 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
     }
 
+    @Test
+    void should
+
     private static UserDto makeUserDto(Long id, String name, String email) {
         UserDto userDto = new UserDto(id, name, email);
         return userDto;
