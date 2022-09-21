@@ -89,14 +89,14 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getUserBookingByState(long bookerId, String state, int from, int size) {
         userRepository.findById(bookerId).orElseThrow(() -> new UserNotFoundException(bookerId));
         List<BookingDto> list = bookingRepository.findAllByBooker_IdOrderByStartDesc(bookerId, makePageParam(from, size));
-        return filterByState(list, state);
+        return filterByState(list, state.toUpperCase());
     }
 
     @Override
     public List<BookingDto> getBookingForUsersItem(long ownerId, String state, int from, int size) {
         userRepository.findById(ownerId).orElseThrow(() -> new UserNotFoundException(ownerId));
         List<BookingDto> list = bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(ownerId, makePageParam(from, size));
-        return filterByState(list, state);
+        return filterByState(list, state.toUpperCase());
     }
 
     private List<BookingDto> filterByState(List<BookingDto> list, String state) {
