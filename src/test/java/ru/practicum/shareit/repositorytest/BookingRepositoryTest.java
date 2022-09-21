@@ -42,13 +42,13 @@ public class BookingRepositoryTest {
                 item, user2);
         booking1 = bookingRepository.save(booking1);
 
-        BookingDto receivedBooking = bookingRepository.findBooking(1L, 1L).get();
+        Booking receivedBooking = bookingRepository.findBooking(1L, 1L).get();
         assertThat(receivedBooking.getId(), is(booking1.getId()));
 
         receivedBooking = bookingRepository.findBooking(2L, 1L).get();
         assertThat(receivedBooking.getId(), is(booking1.getId()));
 
-        Optional<BookingDto> nullBooking = bookingRepository.findBooking(3L, 1L);
+        Optional<Booking> nullBooking = bookingRepository.findBooking(3L, 1L);
         Assertions.assertTrue(nullBooking.isEmpty());
     }
 }

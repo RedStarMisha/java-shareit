@@ -56,7 +56,7 @@ public class IntegrationBookingServiceTest {
         assertThat(response.getId(), is(responseQuery.getId()));
         assertThat(response.getStart(), is(responseQuery.getStart()));
         assertThat(response.getStatus(), allOf(is(responseQuery.getStatus()), is(BookingStatus.WAITING)));
-        assertThat(response.getItem(), is(responseQuery.getItem()));
+        assertThat(response.getItem().getId(), is(responseQuery.getItem().getId()));
         assertThat(response.getBooker(), is(responseQuery.getBooker()));
     }
 
@@ -92,7 +92,7 @@ public class IntegrationBookingServiceTest {
         assertThat(response.getId(), is(responseQuery.getId()));
         assertThat(response.getStart().toLocalDate(), is(responseQuery.getStart().toLocalDate()));
         assertThat(response.getStatus(), allOf(is(responseQuery.getStatus()), is(BookingStatus.WAITING)));
-        assertThat(response.getItem(), is(responseQuery.getItem()));
+        assertThat(response.getItem().getId(), is(responseQuery.getItem().getId()));
         assertThat(response, is(responseByBooker));
     }
 
@@ -103,16 +103,16 @@ public class IntegrationBookingServiceTest {
 
         List<BookingDto> response = bookingService.getUserBookingByState(bookerId, "future", 0, 2);
         TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
-                "where b.booker.id=:bookerId and b.start > :date", Booking.class);
+                "where b.booker.id=:bookerId and b.start > :date order by b.start desc", Booking.class);
         List<Booking> responseQuery = query.setParameter("bookerId", bookerId).setParameter("date", LocalDateTime.now())
                 .setFirstResult(0).setMaxResults(2).getResultList();
 
-        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(3)))); //переписать методы для сортировки по состоянию
+        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(2)))); //переписать методы для сортировки по состоянию
         for (BookingDto bookingDto : response) {
             assertThat(responseQuery, hasItem(allOf(
                     hasProperty("id", is(bookingDto.getId())),
                     hasProperty("booker", is(bookingDto.getBooker())),
-                    hasProperty("item", is(bookingDto.getItem()))
+                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId())))
             )));
             assertThat(bookingDto.getBooker().getId(), is(bookerId));
         }
@@ -128,16 +128,14 @@ public class IntegrationBookingServiceTest {
                 "where b.item.owner.id=:ownerId and b.status = :status order by b.start desc", Booking.class);
         List<Booking> responseQuery = query.setParameter("ownerId", itemsOwner).setParameter("status", BookingStatus.REJECTED)
                 .setFirstResult(0).setMaxResults(4).getResultList();
-
-        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(1))));//переписать методы для сортировки по состоянию
+        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(2))));//переписать методы для сортировки по состоянию
 
         for (BookingDto bookingDto : response) {
             assertThat(responseQuery, hasItem(allOf(
                     hasProperty("id", is(bookingDto.getId())),
                     hasProperty("booker", is(bookingDto.getBooker())),
-                    hasProperty("item", is(bookingDto.getItem()))
+                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId())))
             )));
-            assertThat(bookingDto.getItem().getOwner().getId(), is(itemsOwner));
         }
     }
 }

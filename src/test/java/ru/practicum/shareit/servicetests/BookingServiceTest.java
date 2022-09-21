@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
+import ru.practicum.shareit.booking.BookingState;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoEntry;
@@ -168,73 +169,18 @@ public class BookingServiceTest {
     }
 
     @Test
-    void shouldFilterBookingByStateFutureAndSortedByStart() {
-        List<BookingDto> list = ReflectionTestUtils.invokeMethod(bookingService, "filterByState",
-                makeListOfBooking(), "FUTURE");
-
-        assertThat(list, hasSize(2));
-        assertThat(list.get(0).getId(), is(1L));
-        assertThat(list.get(1).getId(), is(4L));
-    }
-
-    @Test
-    void shouldFilterBookingByStatePastAndSortedByStart() {
-        List<BookingDto> list = ReflectionTestUtils.invokeMethod(bookingService, "filterByState",
-                makeListOfBooking(), "PAST");
-
-        assertThat(list, hasSize(2));
-        assertThat(list.get(0).getId(), is(3L));
-        assertThat(list.get(1).getId(), is(2L));
-    }
-
-    @Test
-    void shouldGetAllBookingWhenStateAllAndSortedByStart() {
-        List<BookingDto> list = ReflectionTestUtils.invokeMethod(bookingService, "filterByState",
-                makeListOfBooking(), "ALL");
-
-        assertThat(list, hasSize(5));
-        assertThat(list.get(0).getId(), is(3L));
-        assertThat(list.get(1).getId(), is(2L));
-        assertThat(list.get(2).getId(), is(5L));
-        assertThat(list.get(3).getId(), is(1L));
-        assertThat(list.get(4).getId(), is(4L));
-    }
-
-    @Test
-    void shouldFilterBookingByStateCurrentAndSortedByStart() {
-        List<BookingDto> list = ReflectionTestUtils.invokeMethod(bookingService, "filterByState",
-                makeListOfBooking(), "CURRENT");
-
-        assertThat(list, hasSize(1));
-        assertThat(list.get(0).getId(), is(5L));
-    }
-
-    @Test
     void shouldFilterBookingByStateWaitingAndSortedByStart() {
-        List<BookingDto> list = ReflectionTestUtils.invokeMethod(bookingService, "filterByState",
-                makeListOfBooking(), "WAITING");
+        BookingState state = ReflectionTestUtils.invokeMethod(bookingService, "getBookingState",
+                 "WAITING");
 
-        assertThat(list, hasSize(4));
-        assertThat(list.get(0).getId(), is(3L));
-        assertThat(list.get(1).getId(), is(2L));
-        assertThat(list.get(2).getId(), is(5L));
-        assertThat(list.get(3).getId(), is(4L));
+        assertThat(state, is(BookingState.WAITING));
     }
 
     @Test
-    void shouldFilterBookingByStateRejectedAndSortedByStart() {
-        List<BookingDto> list = ReflectionTestUtils.invokeMethod(bookingService, "filterByState",
-                makeListOfBooking(), "REJECTED");
-
-        assertThat(list, hasSize(1));
-        assertThat(list.get(0).getId(), is(1L));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenFilterBookingWithUnknownState() {
+    void shouldThrowExceptionWhenUnknownState() {
         UnknownBookingStateException e = Assertions.assertThrows(UnknownBookingStateException.class,
-                () -> ReflectionTestUtils.invokeMethod(bookingService, "filterByState",
-                        makeListOfBooking(), "SUPER"));
+                () -> ReflectionTestUtils.invokeMethod(bookingService, "getBookingState",
+                        "SUPER"));
 
         assertThat(e.getMessage(), is("Unknown state: SUPER"));
     }

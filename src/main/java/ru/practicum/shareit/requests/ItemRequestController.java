@@ -52,7 +52,7 @@ public class ItemRequestController {
 
     @PatchMapping("/{requestId}")
     public ItemRequestDto updateRequest(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Long requestId,
-                                             @Valid ItemRequestDtoEntry itemRequestDto) {
+                                             @RequestBody @Valid ItemRequestDtoEntry itemRequestDto) {
         return requestService.updateRequest(userId, requestId, itemRequestDto);
     }
 

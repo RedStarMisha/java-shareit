@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.practicum.shareit.LocalDateTimeConverter;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -23,7 +24,7 @@ public class BookingDto {
     @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime end;
 
-    private Item item;
+    private ItemDtoShort item;
 
     private User booker;
 

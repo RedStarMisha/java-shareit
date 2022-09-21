@@ -46,7 +46,7 @@ public class IntegrationItemServiceTest {
 
     @BeforeEach
     void setUp() {
-        itemDtoShort = makeItemDtoShort("ИнструМент", "он желтый", true, null);
+        itemDtoShort = makeItemDtoShort(null, "ИнструМент", "он желтый", true, null);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class IntegrationItemServiceTest {
     @Sql(scripts = {"/schema.sql", "/create_four_users.sql", "/create_itemrequest.sql"})
     void shouldAddItemWithRequest() {
         Long userId = 1L;
-        itemDtoShort = makeItemDtoShort("банан", "он желтый", true, 1L);
+        itemDtoShort = makeItemDtoShort(null, "банан", "он желтый", true, 1L);
 
         ItemDtoShort response = itemService.addItem(userId, itemDtoShort);
         TypedQuery<Item> query = entityManager.createQuery("select i from Item i " +
@@ -88,7 +88,7 @@ public class IntegrationItemServiceTest {
     void shouldUpdateItem() {
         Long userId = 1L;
         itemService.addItem(userId, itemDtoShort);
-        ItemDtoShort update = makeItemDtoShort("груша", "зеленая", false, null);
+        ItemDtoShort update = makeItemDtoShort(null, "груша", "зеленая", false, null);
         itemService.updateItem(userId, 1L, update);
 
         TypedQuery<Item> query = entityManager.createQuery("select i from Item i " +

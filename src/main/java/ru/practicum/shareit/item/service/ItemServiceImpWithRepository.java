@@ -57,7 +57,7 @@ public class ItemServiceImpWithRepository implements ItemService {
 
     @Override
     @Transactional
-    public ItemDtoShort addItem(long userId, ItemDtoShort itemDtoShort) {
+    public ItemDtoShort addItem(Long userId, ItemDtoShort itemDtoShort) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         ItemRequest itemRequest = null;   //интересно так вообще делают?
         if (itemDtoShort.getRequestId() != null) {
@@ -80,7 +80,7 @@ public class ItemServiceImpWithRepository implements ItemService {
     }
 
     @Override
-    public ItemDto getItemById(long userId, long itemId) {
+    public ItemDto getItemById(Long userId, long itemId) {
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
         return toResponseItem(item, getLastBooking(itemId, userId),

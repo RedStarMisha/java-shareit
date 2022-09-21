@@ -35,8 +35,8 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    ItemDtoShort editItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
-                          @RequestBody @Validated(Update.class) ItemDtoShort item) {
+    ItemDtoShort updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
+                            @RequestBody @Validated(Update.class) ItemDtoShort item) {
         return itemService.updateItem(userId, itemId, item);
     }
 
@@ -54,10 +54,10 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    List<ItemDtoShort> findItemByName(@RequestHeader("X-Sharer-User-Id") long userId,
-                                      @RequestParam(name = "text") String text,
-                                      @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                      @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    List<ItemDtoShort> findItemsByName(@RequestHeader("X-Sharer-User-Id") long userId,
+                                       @RequestParam(name = "text") String text,
+                                       @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                       @RequestParam(name = "size", defaultValue = "10") Integer size) {
         return text.isBlank() ? Collections.emptyList() : itemService.findItemByName(text, from, size);
     }
 

@@ -103,11 +103,4 @@ public class IntegrationRequestServiceTest {
             )));
         }
     }
-
-    @Test
-    void shouldGetRequests() {
-
-    }
-
-
 }
