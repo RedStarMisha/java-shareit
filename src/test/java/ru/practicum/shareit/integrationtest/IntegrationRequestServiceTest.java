@@ -22,7 +22,8 @@ import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
-@Sql(scripts = "/create_four_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = {"/schema.sql", "/create_four_users.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "/cleandb.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class IntegrationRequestServiceTest {
     private EntityManager em;
 

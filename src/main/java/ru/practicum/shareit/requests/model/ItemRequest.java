@@ -18,7 +18,6 @@ import java.util.Set;
 @Setter
 @EqualsAndHashCode(of = {"id"})
 @Entity
-@ToString
 @Table(name = "requests")
 
 public class ItemRequest {
@@ -37,6 +36,5 @@ public class ItemRequest {
     private LocalDateTime created = LocalDateTime.now();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "request")
-    //@JoinColumn(name = "request") // тут нужно указыва
     private Set<Item> items;
 }

@@ -63,7 +63,6 @@ public class ItemServiceImpWithRepository implements ItemService {
         if (itemDtoShort.getRequestId() != null) {
             itemRequest = requestRepository.findById(itemDtoShort.getRequestId())
                     .orElseThrow(() -> new RequestNotFoundException(itemDtoShort.getRequestId()));
-
         }
         Item item = itemRepository.save(toItem(owner, itemDtoShort, itemRequest));
         log.info(item.toString());
