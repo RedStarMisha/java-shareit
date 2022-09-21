@@ -6,8 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.EmailAlreadyExistException;
+import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.service.UserService;
@@ -72,6 +75,30 @@ public class IntegrationUserServiceTest {
         assertThat(userDtoAfter.getName(), is(userDto2.getName()));
         assertThat(userDtoAfter.getEmail(), is(userDto2.getEmail()));
         assertThat(userDtoAfter.getId(), is(userDto1.getId()));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdateUserOnExistingEmail() {
+        userDto1 = userService.addUser(userDto1);
+        userDto2 = userService.addUser(userDto2);
+
+        UserDto upd = new UserDto(null, "vasy2a", "a2sd@ya.ru");
+
+        EmailAlreadyExistException e = Assertions.assertThrows(EmailAlreadyExistException.class,
+                () -> userService.updateUser(2L, upd));
+        Assertions.assertEquals(e.getMessage(), "email " + upd.getEmail() + " уже зарегистрирован");
+    }
+
+    @Test
+    void shouldThroeExceptionWhenUpdateNotExistingUser() {
+        UserNotFoundException e = Assertions.assertThrows(UserNotFoundException.class,
+                () -> userService.updateUser(1L, userDto1));
+    }
+
+    @Test
+    void shouldThroeExceptionWhenDeleteNotExistingUser() {
+        UserNotFoundException e = Assertions.assertThrows(UserNotFoundException.class,
+                () -> userService.deleteUserById(1L));
     }
 
     @Test

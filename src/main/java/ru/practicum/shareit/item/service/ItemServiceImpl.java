@@ -37,7 +37,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDtoShort addItem(long userId, ItemDtoShort itemDtoShort) {
+    public ItemDtoShort addItem(Long userId, ItemDtoShort itemDtoShort) {
         final User user = toEntity(userService.getUserById(userId));
         itemDtoShort.setId(idCounter++);
         ItemRequest itemRequest;
@@ -51,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getItemById(long userId, long itemId) {
+    public ItemDto getItemById(Long userId, long itemId) {
         userService.getUserById(userId);
         return itemStorage.getItemById(userId, itemId).map(item -> toResponseItem(item, null, null, null))
                 .orElseThrow(() -> new ItemNotFoundException(itemId));

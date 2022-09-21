@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(long userId, UserDto userDto) {
+    public UserDto updateUser(Long userId, UserDto userDto) {
         if (userStorage.emailExistingCheck(userDto.getEmail())) {
             throw new EmailAlreadyExistException(String.format("Пользователь с email %s уже зарегистрирован",
                     userDto.getEmail()));
@@ -49,13 +49,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUserById(long userId) {
+    public void deleteUserById(Long userId) {
         userStorage.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         userStorage.deleteUserById(userId);
     }
 
     @Override
-    public UserDto getUserById(long userId) {
+    public UserDto getUserById(Long userId) {
         return userStorage.getUserById(userId).map(UserMapper::toDto)
                 .orElseThrow(() -> new UserNotFoundException(userId));
     }

@@ -39,21 +39,25 @@ public class UserServiceImpWithRepository implements UserService {
 
     @Override
     @Transactional
-    public UserDto updateUser(long userId, UserDto userDto) {
+    public UserDto updateUser(Long userId, UserDto userDto) {
+        if (userDto.getEmail() != null && userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+            throw new EmailAlreadyExistException(userDto.getEmail());
+        }
         return userRepository.findById(userId).map(user -> {
             User user1 = UserMapper.updateFromDto(user, userDto);
-            userRepository.save(user1);
+                userRepository.save(user1);
             return UserMapper.toDto(user1);
         }).orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     @Override
-    public void deleteUserById(long userId) {
+    public void deleteUserById(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         userRepository.deleteById(userId);
     }
 
     @Override
-    public UserDto getUserById(long userId) {
+    public UserDto getUserById(Long userId) {
         return userRepository.findById(userId).map(UserMapper::toDto)
                 .orElseThrow(() -> new UserNotFoundException(userId));
     }
