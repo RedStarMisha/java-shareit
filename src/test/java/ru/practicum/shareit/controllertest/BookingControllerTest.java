@@ -18,6 +18,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoEntry;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.BookingStatusException;
+import ru.practicum.shareit.exceptions.notfound.BookingNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.user.model.User;
 
@@ -126,6 +127,21 @@ class BookingControllerTest {
     }
 
     @Test
+    void shouldReturn404WhenBookingBookingNotFound() throws Exception {
+        Mockito.doThrow(new BookingNotFoundException(100L)).when(bookingService)
+                .getBookingByUserIdAndBookingId(anyLong(), anyLong());
+
+        mvc.perform(get("/bookings/{bookingId}", 100L)
+                        .header("X-Sharer-User-Id", booker.getId())
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(res -> assertEquals("Бронирование с id = 100 не найдено",
+                        res.getResolvedException().getMessage()));
+    }
+
+    @Test
     void getUserBooking() throws Exception {
         BookingDto booking1 = TestUtil.makeBookingDto(1L, start, end, itemDtoShort, booker, BookingStatus.APPROVED);
         BookingDto booking2 = TestUtil.makeBookingDto(2L, start, end, itemDtoShort, booker, BookingStatus.WAITING);
@@ -159,6 +175,7 @@ class BookingControllerTest {
     void shouldReturn400WhenGetUserBookingWithUnknownState() throws Exception {
         Mockito.doThrow(new BookingStatusException("UNKNOWN")).when(bookingService)
                 .getUserBookingByState(anyLong(), anyString(), anyInt(), anyInt());
+
         mvc.perform(get("/bookings")
                         .header("X-Sharer-User-Id", booker.getId())
                         .param("state", "UNKNOWN")
@@ -168,12 +185,8 @@ class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("$.error", is("Unknown state: UNKNOWN")));
-//                .andExpect(jsonPath("$.error", is("UNKNOWN")));
                 .andExpect(res -> assertEquals("UNKNOWN",
                         res.getResolvedException().getMessage()));
-
-
     }
 
 
