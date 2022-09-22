@@ -166,7 +166,6 @@ class ItemControllerTest {
                 when(itemService).addComment(anyLong(), anyLong(), ArgumentMatchers.any(CommentDto.class));
 
         CommentDto request = makeCommentDto(null, "текст", null, null, null);
-        ;
 
         mvc.perform(post("/items/{itemId}/comment", itemId)
                         .header("X-Sharer-User-Id", userId)
