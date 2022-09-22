@@ -1,7 +1,9 @@
 package ru.practicum.shareit.controllertest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.exceptions.EmailAlreadyExistException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
 import ru.practicum.shareit.user.UserController;
 import ru.practicum.shareit.user.model.UserDto;
@@ -90,6 +93,34 @@ public class UserControllerTest {
     }
 
     @Test
+    void shouldReturn400WhenUpdateRepeatedEmail() throws Exception {
+        Mockito.doThrow(new EmailAlreadyExistException("as@ya.ru")).when(userService).updateUser(anyLong(), any(UserDto.class));
+
+        mvc.perform(patch("/users/{userId}", 1L)
+                        .content(mapper.writeValueAsString(makeUserDto(null, "petya", "as@ya.ru")))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andExpect(res -> assertEquals("email as@ya.ru уже зарегистрирован",
+                        res.getResolvedException().getMessage()));
+    }
+
+    @Test
+    void shouldReturn400WhenThrowUnknownExceptionWhenUpdate() throws Exception {
+        Mockito.doThrow(new NullPointerException()).when(userService).updateUser(anyLong(), any(UserDto.class));
+
+        mvc.perform(patch("/users/{userId}", 1L)
+                        .content(mapper.writeValueAsString(makeUserDto(null, "petya", "as@ya.ru")))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+//                .andExpect(res -> assertEquals("unknown",
+//                        res.getResolvedException().getMessage()));
+    }
+
+    @Test
     void shouldDeleteUser() throws Exception {
         mvc.perform(delete("/users/{userId}", 1L)
                         .accept(MediaType.APPLICATION_JSON))
@@ -103,7 +134,8 @@ public class UserControllerTest {
         mvc.perform(delete("/users/{userId}", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(res -> assertEquals("Пользователь с id = 1 не найден", res.getResolvedException().getMessage()));
+                .andExpect(res -> assertEquals("Пользователь с id = 1 не найден",
+                        res.getResolvedException().getMessage()));
     }
 
     @Test

@@ -41,12 +41,6 @@ public class MyExceptionHandler {
         return new ResponseEntity<>(e.getParameter().getExecutable().toGenericString(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({BindException.class})
-    public ResponseEntity<String> validateExceptionTwo(BindException e) {
-        log.error(e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler({UnknownBookingStateException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse unknownStateBooking(UnknownBookingStateException e) {

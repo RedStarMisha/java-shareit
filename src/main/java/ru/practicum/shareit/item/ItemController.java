@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.comments.CommentDto;
@@ -24,7 +23,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @Autowired
-    public ItemController(@Qualifier("repository") ItemService itemService) {
+    public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
 

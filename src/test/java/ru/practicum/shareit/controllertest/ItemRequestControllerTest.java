@@ -144,42 +144,4 @@ public class ItemRequestControllerTest {
                     .andExpect(jsonPath("$[" + i + "].created", notNullValue()));
         }
     }
-
-    @Test
-    void updateRequest() throws Exception {
-        Long requestorId = 1L;
-        Long requestId = 1L;
-        ItemRequestDtoEntry itemRequest = new ItemRequestDtoEntry("кива");
-        ItemRequestDto response = TestUtil.makeItemRequestDto(requestId, itemRequest.getDescription(), requestorId,
-                LocalDateTime.now(), null);
-        Mockito.when(requestService.updateRequest(anyLong(), anyLong(), ArgumentMatchers.any(ItemRequestDtoEntry.class)))
-                .thenReturn(response);
-
-        mvc.perform(patch("/requests/{requestId}", requestId)
-                        .header("X-Sharer-User-Id", requestorId)
-                        .content(mapper.writeValueAsString(itemRequest))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(response.getId()), Long.class))
-                .andExpect(jsonPath("$.description", is(response.getDescription())))
-                .andExpect(jsonPath("$.requestor", is(requestorId), Long.class))
-                .andExpect(jsonPath("$.created", notNullValue()));
-    }
-
-    @Test
-    void deleteRequest() throws Exception {
-        Long requestorId = 1L;
-        Long requestId = 1L;
-
-        mvc.perform(delete("/requests/{requestId}", requestId)
-                        .header("X-Sharer-User-Id", requestorId)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        Mockito.verify(requestService, Mockito.times(1)).deleteRequest(requestorId, requestId);
-    }
 }

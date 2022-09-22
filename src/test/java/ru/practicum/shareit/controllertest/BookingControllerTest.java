@@ -17,15 +17,20 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoEntry;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exceptions.BookingStatusException;
+import ru.practicum.shareit.exceptions.EmailAlreadyExistException;
 import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.model.UserDto;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -152,6 +157,28 @@ class BookingControllerTest {
                     .andExpect(jsonPath("$[" + i + "].status", is(response.get(i).getStatus().toString())));
         }
     }
+
+    @Test
+    void shouldReturn400WhenGetUserBookingWithUnknownState() throws Exception {
+        Mockito.doThrow(new BookingStatusException("UNKNOWN")).when(bookingService)
+                .getUserBookingByState(anyLong(), anyString(), anyInt(), anyInt());
+        mvc.perform(get("/bookings")
+                        .header("X-Sharer-User-Id", booker.getId())
+                        .param("state", "UNKNOWN")
+                        .param("from", "0")
+                        .param("size", "2")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+//                .andExpect(jsonPath("$.error", is("Unknown state: UNKNOWN")));
+//                .andExpect(jsonPath("$.error", is("UNKNOWN")));
+                .andExpect(res -> assertEquals("UNKNOWN",
+                        res.getResolvedException().getMessage()));
+
+
+    }
+
 
 
     @Test
