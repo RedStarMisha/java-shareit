@@ -17,6 +17,7 @@ import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.item.service.ItemService;
+
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -50,7 +51,7 @@ class ItemControllerTest {
         ItemDtoShort response = makeItemDtoShort(1L, "банан", "он желтый", true, null);
 
         Mockito.when(itemService.addItem(anyLong(), ArgumentMatchers.any(ItemDtoShort.class)))
-                        .thenReturn(response);
+                .thenReturn(response);
 
         mvc.perform(post("/items")
                         .header("X-Sharer-User-Id", ownerId)
@@ -137,14 +138,14 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$", hasSize(response.size())));
         for (int i = 0; i < response.size(); i++) {
             actions
-                .andExpect(jsonPath("$[" + i + "].id", is(response.get(i).getId()), Long.class))
-                .andExpect(jsonPath("$[" + i + "].name", is(response.get(i).getName())))
-                .andExpect(jsonPath("$[" + i + "].description", is(response.get(i).getDescription())))
-                .andExpect(jsonPath("$[" + i + "].available", is(response.get(i).getAvailable()), Boolean.class))
-                .andExpect(jsonPath("$[" + i + "].request", nullValue(), Long.class))
-                .andExpect(jsonPath("$[" + i + "].nextBooking", notNullValue()))
-                .andExpect(jsonPath("$[" + i + "].lastBooking", notNullValue()))
-                .andExpect(jsonPath("$[" + i + "].comments", empty()));
+                    .andExpect(jsonPath("$[" + i + "].id", is(response.get(i).getId()), Long.class))
+                    .andExpect(jsonPath("$[" + i + "].name", is(response.get(i).getName())))
+                    .andExpect(jsonPath("$[" + i + "].description", is(response.get(i).getDescription())))
+                    .andExpect(jsonPath("$[" + i + "].available", is(response.get(i).getAvailable()), Boolean.class))
+                    .andExpect(jsonPath("$[" + i + "].request", nullValue(), Long.class))
+                    .andExpect(jsonPath("$[" + i + "].nextBooking", notNullValue()))
+                    .andExpect(jsonPath("$[" + i + "].lastBooking", notNullValue()))
+                    .andExpect(jsonPath("$[" + i + "].comments", empty()));
         }
     }
 

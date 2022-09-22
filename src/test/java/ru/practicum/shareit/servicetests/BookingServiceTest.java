@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,6 +22,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
+
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static ru.practicum.shareit.TestUtil.*;
@@ -41,13 +41,10 @@ public class BookingServiceTest {
     private UserRepository userRepository;
     @Mock
     private ItemRepository itemRepository;
-    @InjectMocks
     private BookingServiceImpl bookingService;
 
     private User booker;
-
     private User itemOwner;
-
     private Item item;
 
     Long itemId = 1L;
@@ -55,6 +52,7 @@ public class BookingServiceTest {
 
     @BeforeEach
     void setUp() {
+        bookingService = new BookingServiceImpl(bookingRepository, userRepository, itemRepository);
         itemOwner = makeUser(2L, "kolya", "xx1@ya.ru");
         item = makeItem(1L, "банан", "желтый", itemOwner, true, null);
         booker = makeUser(bookerId, "petya", "xx@ya.ru");
@@ -69,6 +67,7 @@ public class BookingServiceTest {
         Mockito.when(itemRepository.findById(itemId))
                 .thenReturn(Optional.of(item));
         Booking booking = toBooking(booker, item, bookingDtoEntry);
+
         Mockito.when(bookingRepository.save(Mockito.any(Booking.class)))
                 .thenReturn(setBookingId(1L, booking));
         BookingDto bookingDto = bookingService.addBooking(bookerId, bookingDtoEntry);
@@ -165,13 +164,13 @@ public class BookingServiceTest {
 
         BookingStatusException e = Assertions.assertThrows(BookingStatusException.class,
                 () -> bookingService.approveStatus(item.getOwner().getId(), bookingId, true));
-        assertThat(e.getMessage(), is( "У аренды нельзя изменить статус"));
+        assertThat(e.getMessage(), is("У аренды нельзя изменить статус"));
     }
 
     @Test
     void shouldFilterBookingByStateWaitingAndSortedByStart() {
         BookingState state = ReflectionTestUtils.invokeMethod(bookingService, "getBookingState",
-                 "WAITING");
+                "WAITING");
 
         assertThat(state, is(BookingState.WAITING));
     }
@@ -188,9 +187,9 @@ public class BookingServiceTest {
     @Test
     void makePageable() {
         assertThat(ReflectionTestUtils.invokeMethod(bookingService, "makePageParam", 0, 3),
-                is(PageRequest.of(0, 3 , Sort.by("id").ascending())));
+                is(PageRequest.of(0, 3, Sort.by("id").ascending())));
         assertThat(ReflectionTestUtils.invokeMethod(bookingService, "makePageParam", 3, 3),
-                is(PageRequest.of(1, 3 , Sort.by("id").ascending())));
+                is(PageRequest.of(1, 3, Sort.by("id").ascending())));
     }
 
     @Test
@@ -206,34 +205,34 @@ public class BookingServiceTest {
     }
 
 
-        private BookingDtoEntry makeBookingDto(LocalDateTime start, LocalDateTime end, Long itemId) {
-            return new BookingDtoEntry(start, end, itemId);
-        }
+    private BookingDtoEntry makeBookingDto(LocalDateTime start, LocalDateTime end, Long itemId) {
+        return new BookingDtoEntry(start, end, itemId);
+    }
 
-        private Booking setBookingId(long bookingId, Booking booking) {
-            booking.setId(bookingId);
-            return booking;
-        }
+    private Booking setBookingId(long bookingId, Booking booking) {
+        booking.setId(bookingId);
+        return booking;
+    }
 
-        private List<BookingDto> makeListOfBooking() {
-            Booking bookingF1 = makeBooking(1L, LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(3),
-                    item, booker);
-            bookingF1.setStatus(BookingStatus.REJECTED);
-            Booking bookingP1 = makeBooking(2L, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1),
-                    item, booker);
-            Booking bookingP2 = makeBooking(3L, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(2),
-                    item, booker);
-            Booking bookingF2 = makeBooking(4L, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4),
-                    item, booker);
-            Booking bookingC = makeBooking(5L, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(3),
-                    item, booker);
-            List<BookingDto> list = new ArrayList<>();
-            list.add(toBookingDto(bookingP2));
-            list.add(toBookingDto(bookingP1));
-            list.add(toBookingDto(bookingC));
-            list.add(toBookingDto(bookingF1));
-            list.add(toBookingDto(bookingF2));
-            return list;
-        }
+    private List<BookingDto> makeListOfBooking() {
+        Booking bookingF1 = makeBooking(1L, LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(3),
+                item, booker);
+        bookingF1.setStatus(BookingStatus.REJECTED);
+        Booking bookingP1 = makeBooking(2L, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1),
+                item, booker);
+        Booking bookingP2 = makeBooking(3L, LocalDateTime.now().minusDays(3), LocalDateTime.now().minusDays(2),
+                item, booker);
+        Booking bookingF2 = makeBooking(4L, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4),
+                item, booker);
+        Booking bookingC = makeBooking(5L, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(3),
+                item, booker);
+        List<BookingDto> list = new ArrayList<>();
+        list.add(toBookingDto(bookingP2));
+        list.add(toBookingDto(bookingP1));
+        list.add(toBookingDto(bookingC));
+        list.add(toBookingDto(bookingF1));
+        list.add(toBookingDto(bookingF2));
+        return list;
+    }
 
 }

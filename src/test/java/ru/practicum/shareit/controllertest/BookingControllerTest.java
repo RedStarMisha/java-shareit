@@ -6,14 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.shareit.TestUtil;
 import ru.practicum.shareit.booking.BookingController;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -21,17 +18,13 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoEntry;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.dto.ItemDtoShort;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -80,7 +73,7 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(response.getId()), Long.class))
-                .andExpect(jsonPath("$.start",   notNullValue()))
+                .andExpect(jsonPath("$.start", notNullValue()))
                 .andExpect(jsonPath("$.end", notNullValue()))
                 .andExpect(jsonPath("$.item.id", is(request.getItemId()), Long.class))
                 .andExpect(jsonPath("$.booker.id", is(booker.getId()), Long.class))
@@ -102,7 +95,7 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(response.getId()), Long.class))
-                .andExpect(jsonPath("$.start",   notNullValue()))
+                .andExpect(jsonPath("$.start", notNullValue()))
                 .andExpect(jsonPath("$.end", notNullValue()))
                 .andExpect(jsonPath("$.item.id", is(1L), Long.class))
                 .andExpect(jsonPath("$.booker.id", is(1L), Long.class))
@@ -123,7 +116,7 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(response.getId()), Long.class))
-                .andExpect(jsonPath("$.start",   notNullValue()))
+                .andExpect(jsonPath("$.start", notNullValue()))
                 .andExpect(jsonPath("$.end", notNullValue()))
                 .andExpect(jsonPath("$.item.id", is(1L), Long.class))
                 .andExpect(jsonPath("$.booker.id", is(1L), Long.class))

@@ -45,7 +45,7 @@ public class UserServiceImpWithRepository implements UserService {
         }
         return userRepository.findById(userId).map(user -> {
             User user1 = UserMapper.updateFromDto(user, userDto);
-                userRepository.save(user1);
+            userRepository.save(user1);
             return UserMapper.toDto(user1);
         }).orElseThrow(() -> new UserNotFoundException(userId));
     }

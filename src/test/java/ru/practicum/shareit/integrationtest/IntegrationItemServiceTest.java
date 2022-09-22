@@ -55,9 +55,9 @@ public class IntegrationItemServiceTest {
 
         ItemDtoShort response = itemService.addItem(userId, itemDtoShort);
         TypedQuery<Item> query = entityManager.createQuery("select i from Item i " +
-                                    "where i.name=:name and i.description=:desc", Item.class);
+                "where i.name=:name and i.description=:desc", Item.class);
         Item responseQuery = query.setParameter("name", itemDtoShort.getName())
-                            .setParameter("desc", itemDtoShort.getDescription()).getSingleResult();
+                .setParameter("desc", itemDtoShort.getDescription()).getSingleResult();
 
         assertThat(response.getId(), is(responseQuery.getId()));
         assertThat(response.getName(), is(responseQuery.getName()));

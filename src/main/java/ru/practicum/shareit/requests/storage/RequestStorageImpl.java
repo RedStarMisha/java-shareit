@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.requests.model.ItemRequest;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Repository

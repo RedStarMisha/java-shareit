@@ -82,14 +82,14 @@ public class IntegrationRequestServiceTest {
     }
 
     @Test
-    void  shouldGetUserRequests() {
+    void shouldGetUserRequests() {
         Long userId = 1L;
         requestService.addRequest(userId, itemRequestDtoEntry1);
         requestService.addRequest(userId, itemRequestDtoEntry2);
         requestService.addRequest(2L, itemRequestDtoEntry3);
 
         TypedQuery<ItemRequest> query = em.createQuery("select r from ItemRequest r " +
-                                                "where r.requestor.id=:id order by r.created desc", ItemRequest.class);
+                "where r.requestor.id=:id order by r.created desc", ItemRequest.class);
         List<ItemRequest> itemRequests = query.setParameter("id", userId).getResultList();
         List<ItemRequestDto> requestDtos = requestService.getUserRequests(userId);
 

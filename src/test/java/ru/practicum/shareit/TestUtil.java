@@ -1,7 +1,6 @@
 package ru.practicum.shareit;
 
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoEntry;
@@ -14,13 +13,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.validation.Create;
-import ru.practicum.shareit.validation.IsText;
-import ru.practicum.shareit.validation.Update;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;

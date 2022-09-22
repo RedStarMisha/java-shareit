@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.EmailAlreadyExistException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
@@ -115,7 +113,7 @@ public class IntegrationUserServiceTest {
     }
 
     @Test
-    void  shouldGetAllUsers() {
+    void shouldGetAllUsers() {
         userService.addUser(userDto1);
         userService.addUser(userDto2);
         List<UserDto> listDto = userService.getAllUSer();
@@ -133,7 +131,6 @@ public class IntegrationUserServiceTest {
         }
 
     }
-
 
 
 }
