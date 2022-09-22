@@ -43,15 +43,15 @@ public class RequestStorageImpl implements RequestStorage {
 
     @Override
     public Optional<ItemRequest> getRequest(Long requestId) {
-        if (requestId != null) {
-            log.info("запрос {} отправлен", requestId);
-            return storage.values()
-                    .stream()
-                    .map(Map::values)
-                    .flatMap(itemRequests -> itemRequests.stream()).filter(itemRequest -> itemRequest.getId() == requestId)
-                    .findFirst();
-        }
-        log.warn("запрос с id = {} не найден", requestId);
+//        if (requestId != null) {
+//            log.info("запрос {} отправлен", requestId);
+//            return storage.values()
+//                    .stream()
+//                    .map(Map::values)
+//                    .flatMap(itemRequests -> itemRequests.stream()).filter(itemRequest -> itemRequest.getId() == requestId)
+//                    .findFirst();
+//        }
+//        log.warn("запрос с id = {} не найден", requestId);
         return Optional.empty();
     }
 
