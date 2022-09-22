@@ -28,6 +28,9 @@ public class BookingMapper {
     }
 
     public static BookingShort toBookingShort(Booking booking) {
-        return new BookingShort(booking.getId(), booking.getBooker().getId());
+        BookingShort bookingShort = new BookingShort();
+        bookingShort.setId(booking.getId());
+        bookingShort.setBookerId(booking.getBooker().getId());
+        return bookingShort;
     }
 }

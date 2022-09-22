@@ -29,7 +29,7 @@ public class IntegrationUserServiceTest {
     private UserService userService;
 
     @Autowired
-    public IntegrationUserServiceTest(EntityManager em, @Qualifier("repository") UserService userService) {
+    public IntegrationUserServiceTest(EntityManager em, UserService userService) {
         this.em = em;
         this.userService = userService;
     }

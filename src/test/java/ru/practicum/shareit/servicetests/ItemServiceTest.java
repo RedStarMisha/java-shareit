@@ -13,7 +13,7 @@ import ru.practicum.shareit.TestUtil;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.item.comments.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDtoShort;
-import ru.practicum.shareit.item.service.ItemServiceImpWithRepository;
+import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.requests.storage.RequestRepository;
 import ru.practicum.shareit.user.model.User;
@@ -41,13 +41,13 @@ public class ItemServiceTest {
     @Mock
     private CommentRepository commentRepository;
 
-    private ItemServiceImpWithRepository itemService;
+    private ItemServiceImpl itemService;
 
     private User user;
 
     @BeforeEach
     void setUp() {
-        itemService = new ItemServiceImpWithRepository(itemRepository, userRepository, requestRepository,
+        itemService = new ItemServiceImpl(itemRepository, userRepository, requestRepository,
                 bookingRepository, commentRepository);
         user = TestUtil.makeUser(1L, "petya", "xx@ya.ru");
     }

@@ -1,7 +1,6 @@
 package ru.practicum.shareit.requests;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
@@ -21,7 +20,7 @@ public class ItemRequestController {
     private final RequestService requestService;
 
     @Autowired
-    public ItemRequestController(@Qualifier("repository") RequestService requestService) {
+    public ItemRequestController(RequestService requestService) {
         this.requestService = requestService;
     }
 
@@ -46,16 +45,5 @@ public class ItemRequestController {
     @GetMapping("/{requestId}")
     public ItemRequestDto getRequest(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long requestId) {
         return requestService.getRequest(userId, requestId);
-    }
-
-    @PatchMapping("/{requestId}")
-    public ItemRequestDto updateRequest(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Long requestId,
-                                        @RequestBody @Valid ItemRequestDtoEntry itemRequestDto) {
-        return requestService.updateRequest(userId, requestId, itemRequestDto);
-    }
-
-    @DeleteMapping("/{requestId}")
-    public void deleteRequest(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long requestId) {
-        requestService.deleteRequest(userId, requestId);
     }
 }

@@ -12,7 +12,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.user.service.UserServiceImpWithRepository;
+import ru.practicum.shareit.user.service.UserServiceImpl;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.Optional;
@@ -27,7 +27,7 @@ public class UserServiceTest {
 
     @BeforeEach
     private void create() {
-        userService = new UserServiceImpWithRepository(userRepository);
+        userService = new UserServiceImpl(userRepository);
     }
 
     @Test

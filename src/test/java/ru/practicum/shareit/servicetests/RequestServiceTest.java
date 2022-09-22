@@ -16,7 +16,7 @@ import ru.practicum.shareit.requests.RequestMapper;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
 import ru.practicum.shareit.requests.service.RequestService;
-import ru.practicum.shareit.requests.service.RequestServiceImpWithRepository;
+import ru.practicum.shareit.requests.service.RequestServiceImpl;
 import ru.practicum.shareit.requests.storage.RequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
@@ -39,7 +39,7 @@ public class RequestServiceTest {
 
     @BeforeEach
     void create() {
-        requestService = new RequestServiceImpWithRepository(userRepository, requestRepository);
+        requestService = new RequestServiceImpl(userRepository, requestRepository);
     }
 
     @Test

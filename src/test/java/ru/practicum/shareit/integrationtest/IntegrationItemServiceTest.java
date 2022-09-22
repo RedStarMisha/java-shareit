@@ -35,7 +35,7 @@ public class IntegrationItemServiceTest {
     private RequestRepository requestRepository;
 
     @Autowired
-    public IntegrationItemServiceTest(EntityManager entityManager, @Qualifier("repository") ItemService itemService,
+    public IntegrationItemServiceTest(EntityManager entityManager, ItemService itemService,
                                       RequestRepository requestRepository) {
         this.entityManager = entityManager;
         this.itemService = itemService;

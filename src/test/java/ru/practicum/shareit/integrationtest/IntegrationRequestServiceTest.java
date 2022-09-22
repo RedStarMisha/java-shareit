@@ -31,7 +31,7 @@ public class IntegrationRequestServiceTest {
 
 
     @Autowired
-    public IntegrationRequestServiceTest(EntityManager em, @Qualifier("repository") RequestService requestService) {
+    public IntegrationRequestServiceTest(EntityManager em, RequestService requestService) {
         this.em = em;
         this.requestService = requestService;
     }
