@@ -33,37 +33,36 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ItemRequestDto addRequest(long userId, ItemRequestDtoEntry itemRequestDto) {
-        User user = userStorage.getUserById(userId).orElseThrow(()-> new UserNotFoundException(userId));
+        User user = userStorage.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         ItemRequest itemRequest = toRequest(user, itemRequestDto);
         itemRequest.setId(requestId++);
-//        return toRequestDto(requestStorage.addRequest(userId, ));
         return null;
     }
 
     @Override
     public ItemRequestDto updateRequest(long userId, long requestId, ItemRequestDtoEntry itemRequestDto) {
-        User user = userStorage.getUserById(userId).orElseThrow(()-> new UserNotFoundException(userId));
+        User user = userStorage.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         return requestStorage.updateRequest(userId, requestId, toRequest(user, itemRequestDto))
                 .map(RequestMapper::toRequestDto).orElseThrow(() -> new RequestNotFoundException(requestId));
     }
 
     @Override
     public void deleteRequest(long userId, long requestId) {
-        User user = userStorage.getUserById(userId).orElseThrow(()-> new UserNotFoundException(userId));
+        User user = userStorage.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         requestStorage.getRequest(requestId).orElseThrow(() -> new RequestNotFoundException(requestId));
         requestStorage.deleteRequest(userId, requestId);
     }
 
     @Override
     public ItemRequestDto getRequest(long userId, long requestId) {
-        userStorage.getUserById(userId).orElseThrow(()-> new UserNotFoundException(userId));
+        userStorage.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         return requestStorage.getRequest(requestId).map(RequestMapper::toRequestDto)
                 .orElseThrow(() -> new RequestNotFoundException(requestId));
     }
 
     @Override
     public List<ItemRequestDto> getUserRequests(long userId) {
-        User user = userStorage.getUserById(userId).orElseThrow(()-> new UserNotFoundException(userId));
+        User user = userStorage.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         return requestStorage.getUserRequests(userId).stream()
                 .map(RequestMapper::toRequestDto).collect(Collectors.toList());
     }
