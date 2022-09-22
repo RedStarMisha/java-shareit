@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,7 +23,6 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.anyLong;
 
 import java.util.Optional;
 
@@ -69,9 +67,9 @@ public class RequestServiceTest {
     @Test
     void makePageable() {
         assertThat(ReflectionTestUtils.invokeMethod(requestService, "makePageParam", 0, 3),
-                is(PageRequest.of(0, 3 , Sort.by("created").descending())));
+                is(PageRequest.of(0, 3, Sort.by("created").descending())));
         assertThat(ReflectionTestUtils.invokeMethod(requestService, "makePageParam", 3, 3),
-               is(PageRequest.of(1, 3 , Sort.by("created").descending())));
+                is(PageRequest.of(1, 3, Sort.by("created").descending())));
     }
 
     @Test

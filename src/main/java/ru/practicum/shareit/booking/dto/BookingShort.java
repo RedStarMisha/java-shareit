@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BookingShort {
 
-    private long id;
+    private Long id;
 
-    private long bookerId;
+    private Long bookerId;
 }

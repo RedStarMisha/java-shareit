@@ -40,7 +40,7 @@ public class ItemRepositoryTest {
                 true, null));
         Item item4 = itemRepository.save(makeItem(null, "Домкрат", "вместе с КЛЮЧом", user2,
                 true, null));
-        Pageable pageable = PageRequest.of(0, 4 , Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(0, 4, Sort.by("id").descending());
 
         List<Item> list = itemRepository.search(text, pageable);
         assertThat(list, hasSize(2));

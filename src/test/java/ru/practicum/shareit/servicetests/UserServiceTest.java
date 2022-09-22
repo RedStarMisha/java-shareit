@@ -7,11 +7,9 @@ import static ru.practicum.shareit.TestUtil.makeUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.service.UserServiceImpWithRepository;
@@ -20,7 +18,6 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-//@AllArgsConstructor(onConstructor_ = @Autowired)
 public class UserServiceTest {
 
     @Mock
@@ -28,12 +25,9 @@ public class UserServiceTest {
 
     private UserService userService;
 
-    private UserDto userDto;
-
     @BeforeEach
     private void create() {
         userService = new UserServiceImpWithRepository(userRepository);
-        userDto = new UserDto(1L, "petya", "boy@ya.ru");
     }
 
     @Test

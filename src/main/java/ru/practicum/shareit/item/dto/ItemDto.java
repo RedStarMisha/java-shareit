@@ -1,8 +1,10 @@
 package ru.practicum.shareit.item.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.item.comments.CommentDto;
+
 import java.util.List;
 
 @Data
@@ -18,8 +20,10 @@ public class ItemDto {
 
     private Long request;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm")
     private BookingShort lastBooking;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm")
     private BookingShort nextBooking;
 
     List<CommentDto> comments;

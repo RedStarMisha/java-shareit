@@ -47,9 +47,9 @@ public class UserControllerTest {
 
         mvc.perform(post("/users")
                         .content(mapper.writeValueAsString(makeUserDto(null, "petya", "as@ya.ru")))
-                .characterEncoding(StandardCharsets.UTF_8)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
@@ -102,8 +102,8 @@ public class UserControllerTest {
         Mockito.doThrow(new UserNotFoundException(userId)).when(userService).deleteUserById(userId);
         mvc.perform(delete("/users/{userId}", 1L)
                         .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound())
-            .andExpect(res -> assertEquals("Пользователь с id = 1 не найден", res.getResolvedException().getMessage()));
+                .andExpect(status().isNotFound())
+                .andExpect(res -> assertEquals("Пользователь с id = 1 не найден", res.getResolvedException().getMessage()));
     }
 
     @Test
@@ -120,6 +120,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
     }
+
     @Test
     void shouldReturn404WhenGetNotExistingUser() throws Exception {
         Long userId = 1L;
@@ -136,7 +137,7 @@ public class UserControllerTest {
         UserDto userDto2 = makeUserDto(2L, "rr", "sss@ya.ru");
         List<UserDto> serviceResponse = List.of(userDto1, userDto2);
         Mockito.when(userService.getAllUSer())
-                    .thenReturn(serviceResponse);
+                .thenReturn(serviceResponse);
 
         mvc.perform(get("/users")
                         .accept(MediaType.APPLICATION_JSON))

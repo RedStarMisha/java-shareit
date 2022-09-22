@@ -12,6 +12,7 @@ import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.storage.RequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
+
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static ru.practicum.shareit.TestUtil.makeItemRequest;
@@ -31,7 +32,6 @@ public class ItemRequestRepositoryTest {
     @Autowired
     private RequestRepository requestRepository;
 
-
     @Test
     void shouldGetAllRequestCreatedByOtherUsers() {
         User user1 = userRepository.findById(1L).get();
@@ -44,12 +44,12 @@ public class ItemRequestRepositoryTest {
         ItemRequest itemRequest4 = requestRepository.save(makeItemRequest(null, "груша", user4, null));
         ItemRequest itemRequest5 = requestRepository.save(makeItemRequest(null, "слива", user4, null));
         List<ItemRequest> listForEqual = List.of(itemRequest3, itemRequest2, itemRequest1);
-        Pageable pageable = PageRequest.of(0, 4 , Sort.by("created").descending());
+        Pageable pageable = PageRequest.of(0, 4, Sort.by("created").descending());
         List<ItemRequest> list = requestRepository.findAllByOtherUser(user4.getId(), pageable);
 
         assertThat(list, hasSize(3));
         for (ItemRequest request : listForEqual) {
-            assertThat(list, hasItem( allOf(
+            assertThat(list, hasItem(allOf(
                     hasProperty("id", is(request.getId())),
                     hasProperty("description", is(request.getDescription())),
                     hasProperty("requestor", is(request.getRequestor()))

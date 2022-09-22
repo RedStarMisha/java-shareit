@@ -1,6 +1,5 @@
 package ru.practicum.shareit.requests.model;
 
-import com.querydsl.core.annotations.QueryEntity;
 import lombok.*;
 import ru.practicum.shareit.LocalDateTimeConverter;
 import ru.practicum.shareit.item.model.Item;

@@ -2,14 +2,16 @@ package ru.practicum.shareit.servicetests;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.TestUtil;
+import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.item.comments.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.item.service.ItemServiceImpWithRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -33,13 +35,20 @@ public class ItemServiceTest {
     @Mock
     private ItemRepository itemRepository;
 
-    @InjectMocks
+    @Mock
+    private BookingRepository bookingRepository;
+
+    @Mock
+    private CommentRepository commentRepository;
+
     private ItemServiceImpWithRepository itemService;
 
     private User user;
 
     @BeforeEach
     void setUp() {
+        itemService = new ItemServiceImpWithRepository(itemRepository, userRepository, requestRepository,
+                bookingRepository, commentRepository);
         user = TestUtil.makeUser(1L, "petya", "xx@ya.ru");
     }
 
