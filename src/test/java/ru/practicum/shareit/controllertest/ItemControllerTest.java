@@ -162,8 +162,8 @@ class ItemControllerTest {
         Long itemId = 1L;
 
         Mockito.doThrow(new CommentCreationException(String.format("User с id = %d" +
-                        " не может оставить комментарий Item c id = %d", userId, itemId))).
-                when(itemService).addComment(anyLong(), anyLong(), ArgumentMatchers.any(CommentDto.class));
+                        " не может оставить комментарий Item c id = %d", userId, itemId)))
+                        .when(itemService).addComment(anyLong(), anyLong(), ArgumentMatchers.any(CommentDto.class));
 
         CommentDto request = makeCommentDto(null, "текст", null, null, null);
 
