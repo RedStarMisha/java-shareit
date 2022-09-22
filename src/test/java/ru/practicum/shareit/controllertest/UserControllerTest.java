@@ -65,6 +65,7 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+
         mvc.perform(post("/users")
                         .content(mapper.writeValueAsString(makeUserDto(null, "asd", "asa.ru")))
                         .characterEncoding(StandardCharsets.UTF_8)

@@ -106,7 +106,29 @@ public class IntegrationBookingServiceTest {
         List<Booking> responseQuery = query.setParameter("bookerId", bookerId).setParameter("date", LocalDateTime.now())
                 .setFirstResult(0).setMaxResults(2).getResultList();
 
-        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(2)))); //переписать методы для сортировки по состоянию
+        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(2))));
+        for (BookingDto bookingDto : response) {
+            assertThat(responseQuery, hasItem(allOf(
+                    hasProperty("id", is(bookingDto.getId())),
+                    hasProperty("booker", is(bookingDto.getBooker())),
+                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId())))
+            )));
+            assertThat(bookingDto.getBooker().getId(), is(bookerId));
+        }
+    }
+
+    @Test
+    @Sql(scripts = {"/schema.sql", "/create_four_users.sql", "/create_four_item.sql", "/create_booking.sql"})
+    void shouldGetUserBookingByStatePast() {
+        Long bookerId = 1L;
+
+        List<BookingDto> response = bookingService.getUserBookingByState(bookerId, "past", 0, 3);
+        TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
+                "where b.booker.id=:bookerId and b.end < :date order by b.start desc", Booking.class);
+        List<Booking> responseQuery = query.setParameter("bookerId", bookerId).setParameter("date", LocalDateTime.now())
+                .setFirstResult(0).setMaxResults(3).getResultList();
+
+        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(1))));
         for (BookingDto bookingDto : response) {
             assertThat(responseQuery, hasItem(allOf(
                     hasProperty("id", is(bookingDto.getId())),
@@ -127,7 +149,49 @@ public class IntegrationBookingServiceTest {
                 "where b.item.owner.id=:ownerId and b.status = :status order by b.start desc", Booking.class);
         List<Booking> responseQuery = query.setParameter("ownerId", itemsOwner).setParameter("status", BookingStatus.REJECTED)
                 .setFirstResult(0).setMaxResults(4).getResultList();
-        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(2))));//переписать методы для сортировки по состоянию
+        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(2))));
+
+        for (BookingDto bookingDto : response) {
+            assertThat(responseQuery, hasItem(allOf(
+                    hasProperty("id", is(bookingDto.getId())),
+                    hasProperty("booker", is(bookingDto.getBooker())),
+                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId())))
+            )));
+        }
+    }
+
+    @Test
+    @Sql(scripts = {"/schema.sql", "/create_four_users.sql", "/create_four_item.sql", "/create_booking.sql"})
+    void shouldGetBookingByItemOwnerAndStateFuture() {
+        Long itemsOwner = 1L;
+
+        List<BookingDto> response = bookingService.getBookingForUsersItem(itemsOwner, "Future", 0, 2);
+        TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
+                "where b.item.owner.id=:ownerId and b.start > :date order by b.start desc", Booking.class);
+        List<Booking> responseQuery = query.setParameter("ownerId", itemsOwner).setParameter("date", LocalDateTime.now())
+                .setFirstResult(0).setMaxResults(4).getResultList();
+        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(2))));
+
+        for (BookingDto bookingDto : response) {
+            assertThat(responseQuery, hasItem(allOf(
+                    hasProperty("id", is(bookingDto.getId())),
+                    hasProperty("booker", is(bookingDto.getBooker())),
+                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId())))
+            )));
+        }
+    }
+
+    @Test
+    @Sql(scripts = {"/schema.sql", "/create_four_users.sql", "/create_four_item.sql", "/create_booking.sql"})
+    void shouldGetBookingByItemOwnerAndStatePast() {
+        Long itemsOwner = 1L;
+
+        List<BookingDto> response = bookingService.getBookingForUsersItem(itemsOwner, "Past", 0, 2);
+        TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
+                "where b.item.owner.id=:ownerId and b.end < :date order by b.start desc", Booking.class);
+        List<Booking> responseQuery = query.setParameter("ownerId", itemsOwner).setParameter("date", LocalDateTime.now())
+                .setFirstResult(0).setMaxResults(4).getResultList();
+        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(1))));
 
         for (BookingDto bookingDto : response) {
             assertThat(responseQuery, hasItem(allOf(
