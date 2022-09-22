@@ -102,4 +102,27 @@ public class IntegrationRequestServiceTest {
             )));
         }
     }
+
+    @Test
+    void shouldGetRequestWhatCanBeAnswered() {
+        Long userId = 1L;
+        requestService.addRequest(userId, itemRequestDtoEntry1);
+        requestService.addRequest(2L, itemRequestDtoEntry2);
+        requestService.addRequest(3L, itemRequestDtoEntry3);
+
+        TypedQuery<ItemRequest> query = em.createQuery("select r from ItemRequest r " +
+                "where r.requestor.id<>:id order by r.created desc", ItemRequest.class);
+        List<ItemRequest> itemRequests = query.setParameter("id", userId).getResultList();
+        List<ItemRequestDto> requestDtos = requestService.getRequests(userId, 0, 2);
+
+        assertThat(itemRequests, hasSize(requestDtos.size()));
+        for (ItemRequest itemRequest : itemRequests) {
+            assertThat(requestDtos, hasItem(allOf(
+                    hasProperty("id", is(itemRequest.getId())),
+                    hasProperty("description", is(itemRequest.getDescription())),
+                    hasProperty("requestor", is(itemRequest.getRequestor().getId())),
+                    hasProperty("created", is(itemRequest.getCreated()))
+            )));
+        }
+    }
 }

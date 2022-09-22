@@ -84,6 +84,19 @@ class BookingControllerTest {
     }
 
     @Test
+    void should400WhenWrongBookingDate() throws Exception {
+        BookingDtoEntry request = TestUtil.makeBookingDtoEntry(end, start, itemDtoShort.getId());
+
+        mvc.perform(post("/bookings")
+                        .content(mapper.writeValueAsString(request))
+                        .header("X-Sharer-User-Id", booker.getId())
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void approveStatus() throws Exception {
         BookingDto response = TestUtil.makeBookingDto(1L, start, end, itemDtoShort, booker, BookingStatus.APPROVED);
 
