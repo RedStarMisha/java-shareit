@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
         ItemRequest itemRequest;
         if (itemDtoShort.getRequestId() != null) {
             itemRequest = requestStorage.getRequest(itemDtoShort.getRequestId())
-                    .orElseThrow(()-> new RequestNotFoundException(itemDtoShort.getRequestId()));
+                    .orElseThrow(() -> new RequestNotFoundException(itemDtoShort.getRequestId()));
         } else {
             itemRequest = null;
         }
@@ -64,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
         ItemRequest itemRequest;
         if (itemDtoShort.getRequestId() != null) {
             itemRequest = requestStorage.getRequest(itemDtoShort.getRequestId())
-                    .orElseThrow(()-> new RequestNotFoundException(itemDtoShort.getRequestId()));
+                    .orElseThrow(() -> new RequestNotFoundException(itemDtoShort.getRequestId()));
         } else {
             itemRequest = null;
         }

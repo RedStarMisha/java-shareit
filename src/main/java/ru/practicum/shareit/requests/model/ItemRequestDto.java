@@ -10,7 +10,7 @@ import java.util.Set;
 
 @AllArgsConstructor
 @Data
-public class ItemRequestDto{
+public class ItemRequestDto {
 
     private Long id;
 

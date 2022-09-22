@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -15,6 +14,7 @@ public class BookingDto {
 
     private Long id;
 
+    //убрал чтобы пройти тесты postman
    //@JsonFormat(pattern = "yyyy.MM.dd HH:mm")
     private LocalDateTime start;
 

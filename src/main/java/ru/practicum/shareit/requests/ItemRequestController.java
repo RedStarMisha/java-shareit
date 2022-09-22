@@ -2,14 +2,12 @@ package ru.practicum.shareit.requests;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
 import ru.practicum.shareit.requests.service.RequestService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 import java.util.List;
 
 /**
@@ -52,7 +50,7 @@ public class ItemRequestController {
 
     @PatchMapping("/{requestId}")
     public ItemRequestDto updateRequest(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Long requestId,
-                                             @RequestBody @Valid ItemRequestDtoEntry itemRequestDto) {
+                                        @RequestBody @Valid ItemRequestDtoEntry itemRequestDto) {
         return requestService.updateRequest(userId, requestId, itemRequestDto);
     }
 
