@@ -13,7 +13,7 @@ public interface RequestStorage {
 
     void deleteRequest(long userId, long requestId);
 
-    Optional<ItemRequest> getRequest(long userId, long requestId);
+    Optional<ItemRequest> getRequest(long userId, Long requestId);
 
     List<ItemRequest> getUserRequests(long userId);
 }

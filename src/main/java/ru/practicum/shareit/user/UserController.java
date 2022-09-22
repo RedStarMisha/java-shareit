@@ -1,8 +1,10 @@
 package ru.practicum.shareit.user;
 
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.validation.Create;
 import ru.practicum.shareit.validation.Update;
 import ru.practicum.shareit.user.model.UserDto;
@@ -13,10 +15,13 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(path = "/users")
-@AllArgsConstructor
 public class UserController {
-
     private final UserService userService;
+
+    @Autowired
+    public UserController(@Qualifier("storage") UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping
     public UserDto addUser(@RequestBody @Validated(Create.class) UserDto userDto) {

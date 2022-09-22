@@ -42,8 +42,8 @@ public class RequestStorageImpl implements RequestStorage {
     }
 
     @Override
-    public Optional<ItemRequest> getRequest(long userId, long requestId) {
-        if (storage.get(userId).containsKey(requestId)) {
+    public Optional<ItemRequest> getRequest(long userId, Long requestId) {
+        if (requestId != null && storage.get(userId).containsKey(requestId)) {
             log.info("запрос {} отправлен", storage.get(userId).get(requestId));
             return Optional.of(storage.get(userId).get(requestId));
         }

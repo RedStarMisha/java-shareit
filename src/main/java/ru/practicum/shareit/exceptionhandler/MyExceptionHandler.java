@@ -5,16 +5,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exceptions.EmailAlreadyExistException;
-import ru.practicum.shareit.exceptions.EntityNotFoundException;
+import ru.practicum.shareit.exceptions.*;
+import ru.practicum.shareit.exceptions.notfound.EntityNotFoundException;
 
 @RestControllerAdvice
 @Slf4j
 public class MyExceptionHandler {
 
-    @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity<String> entityNotFoundException(EntityNotFoundException e) {
+    @ExceptionHandler({EntityNotFoundException.class, BookingCreationException.class})
+    public ResponseEntity<String> entityNotFoundException(RuntimeException e) {
         log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
@@ -31,11 +32,25 @@ public class MyExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler({ItemAvailableException.class, CommentCreationException.class,
+            BookingStatusException.class})
+    public ResponseEntity<String> itemAvailableException(RuntimeException e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     //обработка исключений валидации
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<String> validateException(MethodArgumentNotValidException e) {
         log.error(e.getParameter().toString());
         return new ResponseEntity<>(e.getParameter().getExecutable().toGenericString(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({UnknownBookingStateException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResponse unknownStateBooking(UnknownBookingStateException e) {
+        log.error(e.getMessage());
+        return new ExceptionResponse(e.getMessage());
     }
 
 }
