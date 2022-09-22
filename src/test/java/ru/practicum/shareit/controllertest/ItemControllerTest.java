@@ -12,6 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.practicum.shareit.booking.dto.BookingShort;
+import ru.practicum.shareit.exceptions.CommentCreationException;
+import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
+import ru.practicum.shareit.exceptions.notfound.RequestNotFoundException;
 import ru.practicum.shareit.item.ItemController;
 import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -24,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -68,6 +72,24 @@ class ItemControllerTest {
     }
 
     @Test
+    void shouldReturn404WhenRequestNotFound() throws Exception {
+        Long ownerId = 1L;
+        ItemDtoShort request = makeItemDtoShort(null, "банан", "он желтый", true, 1L);
+
+        Mockito.doThrow(new RequestNotFoundException(1L)).when(itemService).addItem(ownerId, request);
+
+        mvc.perform(post("/items")
+                        .header("X-Sharer-User-Id", ownerId)
+                        .content(mapper.writeValueAsString(request))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(res -> assertEquals("Запрос с id = 1 не найден",
+                        res.getResolvedException().getMessage()));
+    }
+
+    @Test
     void updateItem() throws Exception {
         Long ownerId = 1L;
         Long itemId = 1L;
@@ -99,6 +121,7 @@ class ItemControllerTest {
 
         Mockito.when(itemService.getItemById(anyLong(), anyLong()))
                 .thenReturn(response);
+
         mvc.perform(get("/items/{itemId}", itemId)
                         .header("X-Sharer-User-Id", ownerId)
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -113,6 +136,47 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.nextBooking", notNullValue()))
                 .andExpect(jsonPath("$.lastBooking", notNullValue()))
                 .andExpect(jsonPath("$.comments", empty()));
+    }
+
+    @Test
+    void should404WhenItemNotFound() throws Exception {
+        Long ownerId = 1L;
+        Long itemId = 1L;
+
+        Mockito.doThrow(new ItemNotFoundException(1L)).when(itemService)
+                .getItemById(anyLong(), anyLong());
+
+        mvc.perform(get("/items/{itemId}", itemId)
+                        .header("X-Sharer-User-Id", ownerId)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(res -> assertEquals("Вещь с id = 1 не найдена",
+                        res.getResolvedException().getMessage()));
+    }
+
+    @Test
+    void shouldReturn400WhenCommentException() throws Exception {
+        Long userId = 1L;
+        Long itemId = 1L;
+
+        Mockito.doThrow(new CommentCreationException(String.format("User с id = %d" +
+                        " не может оставить комментарий Item c id = %d", userId, itemId))).
+                when(itemService).addComment(anyLong(), anyLong(), ArgumentMatchers.any(CommentDto.class));
+
+        CommentDto request = makeCommentDto(null, "текст", null, null, null);
+        ;
+
+        mvc.perform(post("/items/{itemId}/comment", itemId)
+                        .header("X-Sharer-User-Id", userId)
+                        .content(mapper.writeValueAsString(request))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(res -> assertEquals("User с id = 1 не может оставить комментарий Item c id = 1",
+                        res.getResolvedException().getMessage()));
     }
 
     @Test
