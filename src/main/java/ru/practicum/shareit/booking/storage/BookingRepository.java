@@ -14,9 +14,7 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    @Query("select b " +
-            "from Booking b" +
-            " where (b.item.owner.id=?1 or b.booker.id=?1) AND b.id=?2")
+    @Query("from Booking b where (b.item.owner.id=?1 or b.booker.id=?1) AND b.id=?2")
     Optional<Booking> findBooking(long userId, long bookingId);
 
     Optional<Booking> findByIdAndItem_Owner_Id(long bookingId, long ownerId);
@@ -33,7 +31,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
 
     // сортировка по состоянию по букерId
-    @Query("select b from Booking b where b.booker.id=?1 and (?2 between b.start and b.end)")
+    @Query("from Booking b where b.booker.id=?1 and (?2 between b.start and b.end)")
     List<Booking> findCurrentBookingsByBookerId(long bookerId, LocalDateTime date, Pageable pageable);
 
     List<Booking> findBookingsByBooker_IdAndStartAfter(Long bookerId, LocalDateTime date, Pageable pageable);
@@ -45,7 +43,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByBooker_Id(long userId, Pageable pageable);
 
     //сортировка по состоянию item_owner_id
-    @Query("select b from Booking b where b.item.owner.id=?1 and (?2 between b.start and b.end)")
+    @Query("from Booking b where b.item.owner.id=?1 and (?2 between b.start and b.end)")
     List<Booking> findCurrentBookingsByItemOwnerId(long ownerId, LocalDateTime date, Pageable pageable);
 
     List<Booking> findBookingsByItem_Owner_IdAndStartAfter(Long ownerId, LocalDateTime date, Pageable pageable);

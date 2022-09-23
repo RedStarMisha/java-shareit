@@ -4,11 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -44,8 +42,7 @@ public class BookingServiceTest {
     private UserRepository userRepository;
     @Mock
     private ItemRepository itemRepository;
-    @InjectMocks
-    @Autowired
+    @Mock
     private StrategyFactory strategyFactory;
 
     private BookingServiceImpl bookingService;
@@ -67,7 +64,7 @@ public class BookingServiceTest {
 
     @Test
     void shouldAddBooking() {
-        BookingDtoEntry bookingDtoEntry = makeBookingDto(LocalDateTime.now().plusDays(2),
+        BookingDtoEntry bookingDtoEntry = makeBookingEntry(LocalDateTime.now().plusDays(2),
                 LocalDateTime.now().plusDays(3), itemId);
         Mockito.when(userRepository.findById(bookerId))
                 .thenReturn(Optional.of(booker));
@@ -92,7 +89,7 @@ public class BookingServiceTest {
         Long bookerId = 2L;
 
         booker = makeUser(bookerId, "petya", "xx@ya.ru");
-        BookingDtoEntry bookingDtoEntry = makeBookingDto(LocalDateTime.now().plusDays(2),
+        BookingDtoEntry bookingDtoEntry = makeBookingEntry(LocalDateTime.now().plusDays(2),
                 LocalDateTime.now().plusDays(3), itemId);
         Mockito.when(userRepository.findById(bookerId))
                 .thenReturn(Optional.of(booker));
@@ -108,7 +105,7 @@ public class BookingServiceTest {
     void shouldThrowExceptionWhenItemIsNotAvailable() {
         item.setAvailable(false);
 
-        BookingDtoEntry bookingDtoEntry = makeBookingDto(LocalDateTime.now().plusDays(2),
+        BookingDtoEntry bookingDtoEntry = makeBookingEntry(LocalDateTime.now().plusDays(2),
                 LocalDateTime.now().plusDays(3), itemId);
         Mockito.when(userRepository.findById(bookerId))
                 .thenReturn(Optional.of(booker));
@@ -141,7 +138,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void shouldRejectedBookingStatus() {
+    void shouldNotApproveStatusBookingStatus() {
         Long bookingId = 1L;
         Booking booking = makeBooking(1L, LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(3),
                 item, booker);
@@ -175,7 +172,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void shouldFilterBookingByStateWaitingAndSortedByStart() {
+    void shouldGetBookingStateWaiting() {
         BookingState state = ReflectionTestUtils.invokeMethod(bookingService, "getBookingState",
                 "WAITING");
 
@@ -212,7 +209,7 @@ public class BookingServiceTest {
     }
 
 
-    private BookingDtoEntry makeBookingDto(LocalDateTime start, LocalDateTime end, Long itemId) {
+    private BookingDtoEntry makeBookingEntry(LocalDateTime start, LocalDateTime end, Long itemId) {
         return new BookingDtoEntry(start, end, itemId);
     }
 
