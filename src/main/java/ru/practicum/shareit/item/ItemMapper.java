@@ -13,6 +13,7 @@ import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
@@ -52,15 +53,9 @@ public class ItemMapper {
     }
 
     public static Item updateFromDto(Item item, ItemDtoShort itemDtoShort) {
-        if (itemDtoShort.getName() != null) {
-            item.setName(itemDtoShort.getName());
-        }
-        if (itemDtoShort.getDescription() != null) {
-            item.setDescription(itemDtoShort.getDescription());
-        }
-        if (itemDtoShort.getAvailable() != null) {
-            item.setAvailable(itemDtoShort.getAvailable());
-        }
+        Optional.ofNullable(itemDtoShort.getName()).ifPresent(item::setName);
+        Optional.ofNullable(itemDtoShort.getDescription()).ifPresent(item::setDescription);
+        Optional.ofNullable(itemDtoShort.getAvailable()).ifPresent(item::setAvailable);
         return item;
     }
 
