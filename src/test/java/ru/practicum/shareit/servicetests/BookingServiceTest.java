@@ -4,19 +4,22 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
-import ru.practicum.shareit.booking.BookingState;
+import ru.practicum.shareit.booking.strategy.BookingState;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoEntry;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.booking.strategy.StrategyFactory;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -41,6 +44,10 @@ public class BookingServiceTest {
     private UserRepository userRepository;
     @Mock
     private ItemRepository itemRepository;
+    @InjectMocks
+    @Autowired
+    private StrategyFactory strategyFactory;
+
     private BookingServiceImpl bookingService;
 
     private User booker;
@@ -52,7 +59,7 @@ public class BookingServiceTest {
 
     @BeforeEach
     void setUp() {
-        bookingService = new BookingServiceImpl(bookingRepository, userRepository, itemRepository);
+        bookingService = new BookingServiceImpl(bookingRepository, userRepository, itemRepository, strategyFactory);
         itemOwner = makeUser(2L, "kolya", "xx1@ya.ru");
         item = makeItem(1L, "банан", "желтый", itemOwner, true, null);
         booker = makeUser(bookerId, "petya", "xx@ya.ru");
@@ -187,9 +194,9 @@ public class BookingServiceTest {
     @Test
     void makePageable() {
         assertThat(ReflectionTestUtils.invokeMethod(bookingService, "makePageParam", 0, 3),
-                is(PageRequest.of(0, 3, Sort.by("id").ascending())));
+                is(PageRequest.of(0, 3, Sort.by("start").descending())));
         assertThat(ReflectionTestUtils.invokeMethod(bookingService, "makePageParam", 3, 3),
-                is(PageRequest.of(1, 3, Sort.by("id").ascending())));
+                is(PageRequest.of(1, 3, Sort.by("start").descending())));
     }
 
     @Test

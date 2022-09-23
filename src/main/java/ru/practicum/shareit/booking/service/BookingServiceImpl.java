@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -8,12 +9,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
-import ru.practicum.shareit.booking.BookingState;
+import ru.practicum.shareit.booking.strategy.BookingState;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.dto.BookingDtoEntry;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.booking.strategy.Strategy;
+import ru.practicum.shareit.booking.strategy.StrategyFactory;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.exceptions.notfound.BookingNotFoundException;
 import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
@@ -31,19 +34,14 @@ import static ru.practicum.shareit.booking.BookingMapper.toBookingDto;
 
 @Service
 @Slf4j
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
-    @Autowired
-    public BookingServiceImpl(BookingRepository bookingRepository, UserRepository userRepository,
-                              ItemRepository itemRepository) {
-        this.bookingRepository = bookingRepository;
-        this.userRepository = userRepository;
-        this.itemRepository = itemRepository;
-    }
+    private final StrategyFactory strategyFactory;
 
     @Override
     @Transactional
@@ -97,28 +95,9 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private List<BookingDto> filterByStateForBookerId(long bookerId, String state, Pageable page) {
-        LocalDateTime date = LocalDateTime.now();
         BookingState bookingState = getBookingState(state);
-        List<Booking> list;
-        switch (bookingState) {
-            case CURRENT:
-                list = bookingRepository.findCurrentBookingsByBookerId(bookerId, date, page);
-                break;
-            case PAST:
-                list = bookingRepository.findBookingsByBooker_IdAndEndBeforeOrderByStartDesc(bookerId, date, page);
-                break;
-            case FUTURE:
-                list = bookingRepository.findBookingsByBooker_IdAndStartAfterOrderByStartDesc(bookerId, date, page);
-                break;
-            case WAITING:
-            case REJECTED:
-                list = bookingRepository.findBookingsByBooker_IdAndStatus(bookerId, BookingStatus.valueOf(state), page);
-                break;
-            default:
-                list = bookingRepository.findAllByBooker_IdOrderByStartDesc(bookerId, page);
-                break;
-        }
-        return list.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
+        Strategy strategy = strategyFactory.findStrategy(bookingState);
+        return strategy.findBookingByStrategy(bookerId, page);
     }
 
     private List<BookingDto> filterByStateForItemOwnerId(Long ownerId, String state, Pageable page) {
@@ -130,18 +109,18 @@ public class BookingServiceImpl implements BookingService {
                 list = bookingRepository.findCurrentBookingsByItemOwnerId(ownerId, date, page);
                 break;
             case PAST:
-                list = bookingRepository.findBookingsByItem_Owner_IdAndEndBeforeOrderByStartDesc(ownerId, date, page);
+                list = bookingRepository.findBookingsByItem_Owner_IdAndEndBefore(ownerId, date, page);
                 break;
             case FUTURE:
-                list = bookingRepository.findBookingsByItem_Owner_IdAndStartAfterOrderByStartDesc(ownerId, date, page);
+                list = bookingRepository.findBookingsByItem_Owner_IdAndStartAfter(ownerId, date, page);
                 break;
             case WAITING:
             case REJECTED:
-                list = bookingRepository.findBookingsByItem_Owner_IdAndStatusOrderByStartDesc(ownerId,
+                list = bookingRepository.findBookingsByItem_Owner_IdAndStatus(ownerId,
                         BookingStatus.valueOf(state), page);
                 break;
             default:
-                list = bookingRepository.findBookingsByItem_Owner_IdOrderByStartDesc(ownerId, page);
+                list = bookingRepository.findBookingsByItem_Owner_Id(ownerId, page);
         }
         return list.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
@@ -159,7 +138,7 @@ public class BookingServiceImpl implements BookingService {
             throw new PaginationParametersException("Неверные параметры страницы");
         }
         int page = from / size;
-        Sort sort = Sort.by("id").ascending();
+        Sort sort = Sort.by("start").descending();
         return PageRequest.of(page, size, sort);
     }
 }
