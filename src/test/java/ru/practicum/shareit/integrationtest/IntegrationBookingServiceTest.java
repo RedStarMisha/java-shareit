@@ -111,7 +111,57 @@ public class IntegrationBookingServiceTest {
             assertThat(responseQuery, hasItem(allOf(
                     hasProperty("id", is(bookingDto.getId())),
                     hasProperty("booker", is(bookingDto.getBooker())),
-                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId())))
+                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId()))),
+                    hasProperty("start", is(bookingDto.getStart())),
+                    hasProperty("end", is(bookingDto.getEnd()))
+            )));
+            assertThat(bookingDto.getBooker().getId(), is(bookerId));
+        }
+    }
+
+    @Test
+    @Sql(scripts = {"/schema.sql", "/create_four_users.sql", "/create_four_item.sql", "/create_booking.sql"})
+    void shouldGetUserBookingByStateCurrent() {
+        Long bookerId = 3L;
+
+        List<BookingDto> response = bookingService.getUserBookingByState(bookerId, "current", 0, 2);
+        TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
+                "where b.booker.id=:bookerId and :date between b.start and b.end order by b.start desc", Booking.class);
+        List<Booking> responseQuery = query.setParameter("bookerId", bookerId).setParameter("date", LocalDateTime.now())
+                .setFirstResult(0).setMaxResults(2).getResultList();
+
+        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(1))));
+        for (BookingDto bookingDto : response) {
+            assertThat(responseQuery, hasItem(allOf(
+                    hasProperty("id", is(bookingDto.getId())),
+                    hasProperty("booker", is(bookingDto.getBooker())),
+                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId()))),
+                    hasProperty("start", is(bookingDto.getStart())),
+                    hasProperty("end", is(bookingDto.getEnd()))
+            )));
+            assertThat(bookingDto.getBooker().getId(), is(bookerId));
+        }
+    }
+
+    @Test
+    @Sql(scripts = {"/schema.sql", "/create_four_users.sql", "/create_four_item.sql", "/create_booking.sql"})
+    void shouldGetUserBookingByStateAll() {
+        Long bookerId = 3L;
+
+        List<BookingDto> response = bookingService.getUserBookingByState(bookerId, "all", 0, 4);
+        TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
+                "where b.booker.id=:bookerId", Booking.class);
+        List<Booking> responseQuery = query.setParameter("bookerId", bookerId).setFirstResult(0)
+                .setMaxResults(4).getResultList();
+
+        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(3))));
+        for (BookingDto bookingDto : response) {
+            assertThat(responseQuery, hasItem(allOf(
+                    hasProperty("id", is(bookingDto.getId())),
+                    hasProperty("booker", is(bookingDto.getBooker())),
+                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId()))),
+                    hasProperty("start", is(bookingDto.getStart())),
+                    hasProperty("end", is(bookingDto.getEnd()))
             )));
             assertThat(bookingDto.getBooker().getId(), is(bookerId));
         }
@@ -133,7 +183,9 @@ public class IntegrationBookingServiceTest {
             assertThat(responseQuery, hasItem(allOf(
                     hasProperty("id", is(bookingDto.getId())),
                     hasProperty("booker", is(bookingDto.getBooker())),
-                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId())))
+                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId()))),
+                    hasProperty("start", is(bookingDto.getStart())),
+                    hasProperty("end", is(bookingDto.getEnd()))
             )));
             assertThat(bookingDto.getBooker().getId(), is(bookerId));
         }
@@ -155,7 +207,9 @@ public class IntegrationBookingServiceTest {
             assertThat(responseQuery, hasItem(allOf(
                     hasProperty("id", is(bookingDto.getId())),
                     hasProperty("booker", is(bookingDto.getBooker())),
-                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId())))
+                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId()))),
+                    hasProperty("start", is(bookingDto.getStart())),
+                    hasProperty("end", is(bookingDto.getEnd()))
             )));
         }
     }
@@ -176,7 +230,9 @@ public class IntegrationBookingServiceTest {
             assertThat(responseQuery, hasItem(allOf(
                     hasProperty("id", is(bookingDto.getId())),
                     hasProperty("booker", is(bookingDto.getBooker())),
-                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId())))
+                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId()))),
+                    hasProperty("start", is(bookingDto.getStart())),
+                    hasProperty("end", is(bookingDto.getEnd()))
             )));
         }
     }
@@ -191,13 +247,15 @@ public class IntegrationBookingServiceTest {
                 "where b.item.owner.id=:ownerId and b.end < :date order by b.start desc", Booking.class);
         List<Booking> responseQuery = query.setParameter("ownerId", itemsOwner).setParameter("date", LocalDateTime.now())
                 .setFirstResult(0).setMaxResults(4).getResultList();
-        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(1))));
 
+        assertThat(response, hasSize(allOf(is(responseQuery.size()), is(1))));
         for (BookingDto bookingDto : response) {
             assertThat(responseQuery, hasItem(allOf(
                     hasProperty("id", is(bookingDto.getId())),
                     hasProperty("booker", is(bookingDto.getBooker())),
-                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId())))
+                    hasProperty("item", hasProperty("id", is(bookingDto.getItem().getId()))),
+                    hasProperty("start", is(bookingDto.getStart())),
+                    hasProperty("end", is(bookingDto.getEnd()))
             )));
         }
     }
