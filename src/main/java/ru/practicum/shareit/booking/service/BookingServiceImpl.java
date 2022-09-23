@@ -35,6 +35,7 @@ import static ru.practicum.shareit.booking.BookingMapper.toBookingDto;
 @Service
 @Slf4j
 @AllArgsConstructor(onConstructor_ = @Autowired)
+@Transactional
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
@@ -44,7 +45,6 @@ public class BookingServiceImpl implements BookingService {
     private final StrategyFactory strategyFactory;
 
     @Override
-    @Transactional
     public BookingDto addBooking(long userId, BookingDtoEntry bookingDtoEntry) {
         User booker = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Item item = itemRepository.findById(bookingDtoEntry.getItemId())
@@ -62,7 +62,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
     public BookingDto approveStatus(long userId, long bookingId, boolean approved) {
         Booking booking = bookingRepository.findByIdAndItem_Owner_Id(bookingId, userId)
                 .orElseThrow(() -> new BookingNotFoundException(bookingId));
