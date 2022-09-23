@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -24,7 +25,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public UserDto addUser(UserDto userDto) {
         User user;
         try {
@@ -36,7 +36,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public UserDto updateUser(Long userId, UserDto userDto) {
         if (userDto.getEmail() != null && userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             throw new EmailAlreadyExistException(userDto.getEmail());

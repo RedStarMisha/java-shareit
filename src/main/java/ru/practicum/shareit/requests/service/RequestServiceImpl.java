@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.PaginationParametersException;
 import ru.practicum.shareit.exceptions.notfound.RequestNotFoundException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor(onConstructor_ = @Autowired)
+@Transactional
 public class RequestServiceImpl implements RequestService {
 
     private final UserRepository userRepository;
