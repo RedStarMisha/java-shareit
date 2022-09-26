@@ -1,64 +1,78 @@
 package ru.practicum.shareit.requests.service;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exceptions.PaginationParametersException;
 import ru.practicum.shareit.exceptions.notfound.RequestNotFoundException;
+import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
 import ru.practicum.shareit.requests.RequestMapper;
+import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
-import ru.practicum.shareit.requests.storage.RequestStorage;
-import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
+import ru.practicum.shareit.requests.storage.RequestRepository;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.UserRepository;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.requests.RequestMapper.toRequest;
-import static ru.practicum.shareit.requests.RequestMapper.toRequestDto;
-
 @Service
+@Slf4j
+@AllArgsConstructor(onConstructor_ = @Autowired)
+@Transactional
 public class RequestServiceImpl implements RequestService {
 
-    private final RequestStorage requestStorage;
-    private final UserService userService;
-    private long requestId = 1;
+    private final UserRepository userRepository;
 
-    @Autowired
-    public RequestServiceImpl(RequestStorage requestStorage, @Qualifier("storage") UserService userService) {
-        this.requestStorage = requestStorage;
-        this.userService = userService;
-    }
+    private final RequestRepository requestRepository;
 
     @Override
-    public ItemRequestDto addRequest(long userId, ItemRequestDto itemRequestDto) {
-        userService.getUserById(userId);
-        itemRequestDto.setId(requestId++);
-        return toRequestDto(requestStorage.addRequest(userId, toRequest(userId, itemRequestDto)));
-    }
-
-    @Override
-    public ItemRequestDto updateRequest(long userId, long requestId, ItemRequestDto itemRequestDto) {
-        userService.getUserById(userId);
-        return requestStorage.updateRequest(userId, requestId, toRequest(userId, itemRequestDto))
-                .map(RequestMapper::toRequestDto).orElseThrow(() -> new RequestNotFoundException(requestId));
-    }
-
-    @Override
-    public void deleteRequest(long userId, long requestId) {
-        userService.getUserById(userId);
-        requestStorage.getRequest(userId, requestId).orElseThrow(() -> new RequestNotFoundException(requestId));
-        requestStorage.deleteRequest(userId, requestId);
+    public ItemRequestDto addRequest(long userId, ItemRequestDtoEntry itemRequestDtoEntry) {
+        User requestor = checkUser(userId);
+        ItemRequest itemRequest = requestRepository.save(RequestMapper.toRequest(requestor, itemRequestDtoEntry));
+        log.info("Запрос на вещь {} добавлен", itemRequestDtoEntry);
+        return RequestMapper.toRequestDto(itemRequest);
     }
 
     @Override
     public ItemRequestDto getRequest(long userId, long requestId) {
-        userService.getUserById(userId);
-        return requestStorage.getRequest(userId, requestId).map(RequestMapper::toRequestDto)
+        checkUser(userId);
+        return requestRepository.findById(requestId)
+                .map(itemRequest -> RequestMapper.toRequestDto(itemRequest))
                 .orElseThrow(() -> new RequestNotFoundException(requestId));
     }
 
     @Override
     public List<ItemRequestDto> getUserRequests(long userId) {
-        userService.getUserById(userId);
-        return requestStorage.getUserRequests(userId).stream()
+        checkUser(userId);
+        return requestRepository.findAllByRequestor_IdOrderByCreatedDesc(userId).stream()
                 .map(RequestMapper::toRequestDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ItemRequestDto> getRequests(long userId, Integer from, Integer size) {
+        checkUser(userId);
+        return requestRepository.findAllByOtherUser(userId, makePageParam(from, size)).stream()
+                .map(RequestMapper::toRequestDto)
+                .collect(Collectors.toList());
+    }
+
+    private User checkUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    public static Pageable makePageParam(int from, int size) {
+        if (from < 0 || size < 1) {
+            throw new PaginationParametersException("Неверные параметры страницы");
+        }
+        int page = from / size;
+        Sort sort = Sort.by("created").descending();
+        return PageRequest.of(page, size, sort);
     }
 }

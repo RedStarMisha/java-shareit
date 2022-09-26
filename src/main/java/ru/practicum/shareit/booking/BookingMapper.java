@@ -8,6 +8,8 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+import static ru.practicum.shareit.item.ItemMapper.toItemDto;
+
 @Component
 public class BookingMapper {
 
@@ -21,11 +23,14 @@ public class BookingMapper {
     }
 
     public static BookingDto toBookingDto(Booking booking) {
-        return new BookingDto(booking.getId(), booking.getStart(), booking.getEnd(), booking.getItem(),
+        return new BookingDto(booking.getId(), booking.getStart(), booking.getEnd(), toItemDto(booking.getItem()),
                 booking.getBooker(), booking.getStatus());
     }
 
     public static BookingShort toBookingShort(Booking booking) {
-        return new BookingShort(booking.getId(), booking.getBooker().getId());
+        BookingShort bookingShort = new BookingShort();
+        bookingShort.setId(booking.getId());
+        bookingShort.setBookerId(booking.getBooker().getId());
+        return bookingShort;
     }
 }

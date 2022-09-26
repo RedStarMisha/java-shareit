@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * // TODO .
  */
 @Data
-public class ItemDtoEntry {
+public class ItemDtoShort {
 
     private Long id;
 
@@ -27,5 +27,5 @@ public class ItemDtoEntry {
     @NotNull(groups = {Create.class})
     private Boolean available;
 
-    private Long request;
+    private Long requestId;
 }

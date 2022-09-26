@@ -26,14 +26,8 @@ public class MyExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler({Throwable.class})
-    public ResponseEntity<String> unknownException(Throwable e) {
-        log.error(e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @ExceptionHandler({ItemAvailableException.class, CommentCreationException.class,
-            BookingStatusException.class})
+            BookingStatusException.class, PaginationParametersException.class})
     public ResponseEntity<String> itemAvailableException(RuntimeException e) {
         log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -51,6 +45,12 @@ public class MyExceptionHandler {
     public ExceptionResponse unknownStateBooking(UnknownBookingStateException e) {
         log.error(e.getMessage());
         return new ExceptionResponse(e.getMessage());
+    }
+
+    @ExceptionHandler({Throwable.class})
+    public ResponseEntity<String> unknownException(Throwable e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

@@ -1,29 +1,39 @@
 package ru.practicum.shareit.requests.model;
 
-import lombok.Data;
+import lombok.*;
+import ru.practicum.shareit.LocalDateTimeConverter;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * // Item Request model .
  */
-@Data
+
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"id"})
 @Entity
 @Table(name = "requests")
+
 public class ItemRequest {
     @Id
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "requestor")
-    private long requestor;
+    @OneToOne(fetch = FetchType.LAZY)
+    private User requestor;
 
     @Column(name = "created")
-    private LocalDateTime created;
+    @Convert(converter = LocalDateTimeConverter.class)
+    private LocalDateTime created = LocalDateTime.now();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "request")
+    private Set<Item> items;
 }

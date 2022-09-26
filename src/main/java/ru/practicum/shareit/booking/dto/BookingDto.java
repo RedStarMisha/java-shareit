@@ -1,29 +1,27 @@
 package ru.practicum.shareit.booking.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.practicum.shareit.LocalDateTimeConverter;
 import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.user.model.User;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-//@NoArgsConstructor
 public class BookingDto {
 
     private Long id;
 
-    @Convert(converter = LocalDateTimeConverter.class)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime start;
 
-    @Convert(converter = LocalDateTimeConverter.class)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime end;
 
-    private Item item;
+    private ItemDtoShort item;
 
     private User booker;
 
