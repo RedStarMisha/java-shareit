@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,17 +20,8 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 public class BaseClient {
     protected final RestTemplate rest;
 
-    @Value("${shareit-server.url}")
-    private String serverUrl;
-
     public BaseClient(RestTemplate rest) {
         this.rest = rest;
-    }
-
-    public BaseClient(RestTemplate rest, String prefix) {
-        this.rest = rest;
-        rest.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-        rest.setUriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + prefix));
     }
 
     protected ResponseEntity<Object> get(String path) {

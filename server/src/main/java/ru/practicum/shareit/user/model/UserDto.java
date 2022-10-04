@@ -5,7 +5,6 @@ import lombok.Data;
 import ru.practicum.shareit.validation.Create;
 import ru.practicum.shareit.validation.Update;
 import ru.practicum.shareit.validation.IsText;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
