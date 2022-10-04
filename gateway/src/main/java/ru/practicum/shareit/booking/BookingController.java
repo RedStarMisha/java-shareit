@@ -1,4 +1,4 @@
-package main.java.ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import main.java.ru.practicum.shareit.booking.dto.BookItemRequestDto;
-import main.java.ru.practicum.shareit.booking.dto.BookingState;
-import ru.practicum.shareit.booking.BookingClient;
+import ru.practicum.shareit.booking.dto.BookItemRequestDto;
+import ru.practicum.shareit.booking.strategy.BookingState;
+
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
