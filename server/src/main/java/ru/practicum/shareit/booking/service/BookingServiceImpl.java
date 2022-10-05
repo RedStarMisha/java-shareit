@@ -9,28 +9,26 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
-import ru.practicum.shareit.booking.strategy.BookingState;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.dto.BookingDtoEntry;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.booking.strategy.BookingState;
+import ru.practicum.shareit.booking.dto.BookingDtoEntry;
 import ru.practicum.shareit.booking.strategy.Strategy;
 import ru.practicum.shareit.booking.strategy.StrategyFactory;
 import ru.practicum.shareit.exceptions.*;
-import ru.practicum.shareit.exceptions.notfound.BookingNotFoundException;
 import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.exceptions.notfound.BookingNotFoundException;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static ru.practicum.shareit.booking.BookingMapper.toBookingDto;
 
 @Service
 @Slf4j
@@ -58,7 +56,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = BookingMapper.toBooking(booker, item, bookingDtoEntry);
         booking = bookingRepository.save(booking);
         log.info("Бронирование добавлено " + booking);
-        return toBookingDto(booking);
+        return BookingMapper.toBookingDto(booking);
     }
 
     @Override
@@ -72,7 +70,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(bookingStatus);
         bookingRepository.save(booking);
         log.warn("Бронирование обновлено " + booking);
-        return toBookingDto(booking);
+        return BookingMapper.toBookingDto(booking);
     }
 
     @Override
