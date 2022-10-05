@@ -3,10 +3,10 @@ package ru.practicum.shareit.user.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.exceptions.EmailAlreadyExistException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.exceptions.EmailAlreadyExistException;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.storage.UserRepository;
 

@@ -1,10 +1,10 @@
-package ru.practicum.shareit.user.model;
+package ru.practicum.shareit.controller.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.practicum.shareit.validation.Create;
-import ru.practicum.shareit.validation.IsText;
-import ru.practicum.shareit.validation.Update;
+import validation.Create;
+import validation.IsText;
+import validation.Update;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

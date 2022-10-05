@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="main.java.ru.practicum.shareit.ShareItGateway" type="Application" factoryName="Application" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="main.java.ru.practicum.shareit.ShareItGateway" />
+  <configuration default="false" name="ShareItGateway" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="ShareItGateway" />
     <module name="shareit-gateway" />
     <extension name="coverage">
       <pattern>
