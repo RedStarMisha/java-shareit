@@ -3,36 +3,14 @@ package ru.practicum.shareit.controller.item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.shareit.booking.BookingMapper;
-import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.controller.client.BaseClient;
-import ru.practicum.shareit.exceptions.CommentCreationException;
-import ru.practicum.shareit.exceptions.PaginationParametersException;
-import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
-import ru.practicum.shareit.exceptions.notfound.RequestNotFoundException;
-import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
-import ru.practicum.shareit.item.ItemMapper;
-import ru.practicum.shareit.item.comments.Comment;
-import ru.practicum.shareit.item.comments.CommentDto;
 
-import ru.practicum.shareit.validation.Update;
-
-import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @Service
 public class ItemClient extends BaseClient {
@@ -57,13 +35,11 @@ public class ItemClient extends BaseClient {
         return patch("/" + itemId, userId, item);
     }
 
-    ResponseEntity<Object> getItem(long userId, long itemId) {
+    ResponseEntity<Object> getItemById(long userId, long itemId) {
         return get("/" + itemId, userId);
     }
 
-    ResponseEntity<Object> getOwnerItems(long userId,
-                                @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    ResponseEntity<Object> getOwnerItems(long userId, int from, int size) {
         Map<String, Object> parameters = Map.of(
                 "from", from,
                 "size", size
@@ -71,17 +47,16 @@ public class ItemClient extends BaseClient {
         return get("", userId, parameters);
     }
 
-    @GetMapping("/search")
-    List<ItemDtoShort> findItemsByName(@RequestHeader("X-Sharer-User-Id") long userId,
-                                       @RequestParam(name = "text") String text,
-                                       @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                       @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        return text.isBlank() ? Collections.emptyList() : itemService.findItemByName(text, from, size);
+    ResponseEntity<Object> findItemsByName(long userId, String text, int from, int size) {
+        Map<String, Object> parameters = Map.of(
+                "text", text,
+                "from", from,
+                "size", size
+        );
+        return get("", userId, parameters);
     }
 
-    @PostMapping("/{itemId}/comment")
-    CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Long authorId, @PathVariable(name = "itemId") Long itemId,
-                          @RequestBody @Valid CommentDto commentDto) {
-        return itemService.addComment(authorId, itemId, commentDto);
+    ResponseEntity<Object> addComment(long authorId, long itemId, CommentDto commentDto) {
+        return post("/" + itemId + "/comment", authorId, commentDto);
     }
 }
