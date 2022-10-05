@@ -14,7 +14,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(path = "/requests")
-
 public class ItemRequestController {
 
     private final RequestService requestService;
