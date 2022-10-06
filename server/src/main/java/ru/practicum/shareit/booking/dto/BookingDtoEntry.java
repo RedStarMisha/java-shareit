@@ -12,14 +12,12 @@ import java.time.LocalDateTime;
  */
 @AllArgsConstructor
 @Data
-@CheckBookingDate
 public class BookingDtoEntry {
 
     private LocalDateTime start;
 
     private LocalDateTime end;
 
-    @NotNull
     private Long itemId;
 
 }

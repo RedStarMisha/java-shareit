@@ -44,7 +44,7 @@ public class ItemClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("", userId, parameters);
+        return get("?from={from}&size={size}", userId, parameters);
     }
 
     ResponseEntity<Object> findItemsByName(long userId, String text, int from, int size) {
@@ -53,7 +53,7 @@ public class ItemClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("", userId, parameters);
+        return get("?text={text}&from={from}&size={size}", userId, parameters);
     }
 
     ResponseEntity<Object> addComment(long authorId, long itemId, CommentDto commentDto) {

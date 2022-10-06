@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDtoEntry;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.booking.strategy.BookingState;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -25,7 +26,7 @@ public class BookingController {
 
     @PostMapping
     BookingDto addBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                          @RequestBody @Valid BookingDtoEntry bookingDtoEntry) {
+                          @RequestBody BookingDtoEntry bookingDtoEntry) {
         return bookingService.addBooking(userId, bookingDtoEntry);
     }
 
@@ -44,17 +45,17 @@ public class BookingController {
 
     @GetMapping
     List<BookingDto> getUserBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                    @RequestParam(name = "state", defaultValue = "ALL", required = false) String state,
-                                    @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                    @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                            @RequestParam(name = "state", defaultValue = "ALL", required = false) BookingState state,
+                            @RequestParam(name = "from", defaultValue = "0") Integer from,
+                            @RequestParam(name = "size", defaultValue = "10") Integer size) {
         return bookingService.getUserBookingByState(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     List<BookingDto> getBookingForUsersItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                            @RequestParam(name = "state", defaultValue = "ALL", required = false) String state,
-                                            @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                            @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                            @RequestParam(name = "state", defaultValue = "ALL", required = false) BookingState state,
+                            @RequestParam(name = "from", defaultValue = "0") Integer from,
+                            @RequestParam(name = "size", defaultValue = "10") Integer size) {
         return bookingService.getBookingForUsersItem(userId, state, from, size);
     }
 
