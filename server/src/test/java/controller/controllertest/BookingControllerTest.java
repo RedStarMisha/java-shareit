@@ -163,7 +163,7 @@ class BookingControllerTest {
         BookingDto booking2 = TestUtil.makeBookingDto(2L, start, end, itemDtoShort, booker, BookingStatus.WAITING);
         List<BookingDto> response = List.of(booking1, booking2);
 
-        Mockito.when(bookingService.getUserBookingByState(anyLong(), anyString(), anyInt(), anyInt()))
+        Mockito.when(bookingService.getUserBookingByState(anyLong(), any(), anyInt(), anyInt()))
                 .thenReturn(response);
 
         ResultActions actions = mvc.perform(get("/bookings")
@@ -190,7 +190,7 @@ class BookingControllerTest {
     @Test
     void shouldReturn400WhenGetUserBookingWithUnknownState() throws Exception {
         Mockito.doThrow(new BookingStatusException("UNKNOWN")).when(bookingService)
-                .getUserBookingByState(anyLong(), anyString(), anyInt(), anyInt());
+                .getUserBookingByState(anyLong(), any(), anyInt(), anyInt());
 
         mvc.perform(get("/bookings")
                         .header("X-Sharer-User-Id", booker.getId())
@@ -213,7 +213,7 @@ class BookingControllerTest {
         BookingDto booking2 = TestUtil.makeBookingDto(2L, start, end, itemDtoShort, booker, BookingStatus.WAITING);
         List<BookingDto> response = List.of(booking1, booking2);
 
-        Mockito.when(bookingService.getBookingForUsersItem(anyLong(), anyString(), anyInt(), anyInt()))
+        Mockito.when(bookingService.getBookingForUsersItem(anyLong(), any(), anyInt(), anyInt()))
                 .thenReturn(response);
 
         ResultActions actions = mvc.perform(get("/bookings/owner")

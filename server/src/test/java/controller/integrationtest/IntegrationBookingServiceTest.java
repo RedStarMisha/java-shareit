@@ -14,6 +14,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoEntry;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.booking.strategy.BookingState;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -103,7 +104,7 @@ public class IntegrationBookingServiceTest {
     void shouldGetUserBookingByStateFuture() {
         Long bookerId = 3L;
 
-        List<BookingDto> response = bookingService.getUserBookingByState(bookerId, "future", 0, 2);
+        List<BookingDto> response = bookingService.getUserBookingByState(bookerId, BookingState.FUTURE, 0, 2);
         TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
                 "where b.booker.id=:bookerId and b.start > :date order by b.start desc", Booking.class);
         List<Booking> responseQuery = query.setParameter("bookerId", bookerId).setParameter("date", LocalDateTime.now())
@@ -127,7 +128,7 @@ public class IntegrationBookingServiceTest {
     void shouldGetUserBookingByStateCurrent() {
         Long bookerId = 3L;
 
-        List<BookingDto> response = bookingService.getUserBookingByState(bookerId, "current", 0, 2);
+        List<BookingDto> response = bookingService.getUserBookingByState(bookerId, BookingState.CURRENT, 0, 2);
         TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
                 "where b.booker.id=:bookerId and :date between b.start and b.end order by b.start desc", Booking.class);
         List<Booking> responseQuery = query.setParameter("bookerId", bookerId).setParameter("date", LocalDateTime.now())
@@ -151,7 +152,7 @@ public class IntegrationBookingServiceTest {
     void shouldGetUserBookingByStateAll() {
         Long bookerId = 3L;
 
-        List<BookingDto> response = bookingService.getUserBookingByState(bookerId, "all", 0, 4);
+        List<BookingDto> response = bookingService.getUserBookingByState(bookerId, BookingState.ALL, 0, 4);
         TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
                 "where b.booker.id=:bookerId", Booking.class);
         List<Booking> responseQuery = query.setParameter("bookerId", bookerId).setFirstResult(0)
@@ -175,7 +176,7 @@ public class IntegrationBookingServiceTest {
     void shouldGetUserBookingByStatePast() {
         Long bookerId = 1L;
 
-        List<BookingDto> response = bookingService.getUserBookingByState(bookerId, "past", 0, 3);
+        List<BookingDto> response = bookingService.getUserBookingByState(bookerId, BookingState.PAST, 0, 3);
         TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
                 "where b.booker.id=:bookerId and b.end < :date order by b.start desc", Booking.class);
         List<Booking> responseQuery = query.setParameter("bookerId", bookerId).setParameter("date", LocalDateTime.now())
@@ -199,7 +200,7 @@ public class IntegrationBookingServiceTest {
     void shouldGetBookingByItemOwnerAndStateRejected() {
         Long itemsOwner = 1L;
 
-        List<BookingDto> response = bookingService.getBookingForUsersItem(itemsOwner, "rejectEd", 0, 2);
+        List<BookingDto> response = bookingService.getBookingForUsersItem(itemsOwner, BookingState.REJECTED, 0, 2);
         TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
                 "where b.item.owner.id=:ownerId and b.status = :status order by b.start desc", Booking.class);
         List<Booking> responseQuery = query.setParameter("ownerId", itemsOwner).setParameter("status", BookingStatus.REJECTED)
@@ -222,11 +223,11 @@ public class IntegrationBookingServiceTest {
     void shouldGetBookingByItemOwnerAndStateFuture() {
         Long itemsOwner = 1L;
 
-        List<BookingDto> response = bookingService.getBookingForUsersItem(itemsOwner, "Future", 0, 2);
+        List<BookingDto> response = bookingService.getBookingForUsersItem(itemsOwner, BookingState.FUTURE, 0, 2);
         TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
                 "where b.item.owner.id=:ownerId and b.start > :date order by b.start desc", Booking.class);
-        List<Booking> responseQuery = query.setParameter("ownerId", itemsOwner).setParameter("date", LocalDateTime.now())
-                .setFirstResult(0).setMaxResults(4).getResultList();
+        List<Booking> responseQuery = query.setParameter("ownerId", itemsOwner).setParameter("date",
+                        LocalDateTime.now()).setFirstResult(0).setMaxResults(4).getResultList();
         assertThat(response, hasSize(allOf(is(responseQuery.size()), is(2))));
 
         for (BookingDto bookingDto : response) {
@@ -245,7 +246,7 @@ public class IntegrationBookingServiceTest {
     void shouldGetBookingByItemOwnerAndStatePast() {
         Long itemsOwner = 1L;
 
-        List<BookingDto> response = bookingService.getBookingForUsersItem(itemsOwner, "Past", 0, 2);
+        List<BookingDto> response = bookingService.getBookingForUsersItem(itemsOwner, BookingState.PAST, 0, 2);
         TypedQuery<Booking> query = em.createQuery("select b from Booking b " +
                 "where b.item.owner.id=:ownerId and b.end < :date order by b.start desc", Booking.class);
         List<Booking> responseQuery = query.setParameter("ownerId", itemsOwner).setParameter("date", LocalDateTime.now())
