@@ -29,13 +29,13 @@ public class ItemController {
 
     @PostMapping
     ItemDtoShort addItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                         @RequestBody @Validated(Create.class) ItemDtoShort item) {
+                         @RequestBody ItemDtoShort item) {
         return itemService.addItem(userId, item);
     }
 
     @PatchMapping("/{itemId}")
     ItemDtoShort updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
-                            @RequestBody @Validated(Update.class) ItemDtoShort item) {
+                            @RequestBody ItemDtoShort item) {
         return itemService.updateItem(userId, itemId, item);
     }
 
@@ -46,23 +46,20 @@ public class ItemController {
     }
 
     @GetMapping
-    List<ItemDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") long userId,
-                                @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    List<ItemDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") long userId, @RequestParam(name = "from") Integer from,
+                                @RequestParam(name = "size") Integer size) {
         return itemService.getUserItems(userId, from, size);
     }
 
     @GetMapping("/search")
-    List<ItemDtoShort> findItemsByName(@RequestHeader("X-Sharer-User-Id") long userId,
-                                       @RequestParam(name = "text") String text,
-                                       @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                       @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    List<ItemDtoShort> findItemsByName(@RequestHeader("X-Sharer-User-Id") long userId, @RequestParam(name = "text") String text,
+                                   @RequestParam(name = "from") Integer from, @RequestParam(name = "size") Integer size) {
         return text.isBlank() ? Collections.emptyList() : itemService.findItemByName(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
     CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Long authorId, @PathVariable(name = "itemId") Long itemId,
-                          @RequestBody @Valid CommentDto commentDto) {
+                          @RequestBody CommentDto commentDto) {
         return itemService.addComment(authorId, itemId, commentDto);
     }
 }

@@ -6,7 +6,6 @@ import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
 import ru.practicum.shareit.requests.service.RequestService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -14,18 +13,18 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(path = "/requests")
-public class ItemRequestController {
+public class RequestController {
 
     private final RequestService requestService;
 
     @Autowired
-    public ItemRequestController(RequestService requestService) {
+    public RequestController(RequestService requestService) {
         this.requestService = requestService;
     }
 
     @PostMapping
     public ItemRequestDto addRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                     @RequestBody @Valid ItemRequestDtoEntry itemRequestDtoEntry) {
+                                     @RequestBody ItemRequestDtoEntry itemRequestDtoEntry) {
         return requestService.addRequest(userId, itemRequestDtoEntry);
     }
 

@@ -1,9 +1,9 @@
 package ru.practicum.shareit.controller.item;
 
 import lombok.Data;
-import ru.practicum.shareit.validation.Create;
-import ru.practicum.shareit.validation.IsText;
-import ru.practicum.shareit.validation.Update;
+import validation.Create;
+import validation.IsText;
+import validation.Update;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

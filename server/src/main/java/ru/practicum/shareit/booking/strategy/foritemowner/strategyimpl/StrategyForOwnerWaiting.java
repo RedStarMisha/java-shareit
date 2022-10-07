@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.strategy.strategyimpl;
+package ru.practicum.shareit.booking.strategy.foritemowner.strategyimpl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +9,14 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.booking.strategy.BookingState;
-import ru.practicum.shareit.booking.strategy.Strategy;
+import ru.practicum.shareit.booking.strategy.foritemowner.StrategyForItemOwner;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor(onConstructor_ = @Autowired)
-public class StrategyWaiting implements Strategy {
+public class StrategyForOwnerWaiting implements StrategyForItemOwner {
     private final BookingRepository bookingRepository;
 
     @Override
@@ -25,8 +25,8 @@ public class StrategyWaiting implements Strategy {
     }
 
     @Override
-    public List<BookingDto> findBookingByStrategy(Long bookerId, Pageable page) {
-        return bookingRepository.findBookingsByBooker_IdAndStatus(bookerId, BookingStatus.WAITING, page)
+    public List<BookingDto> findBookingByStrategy(Long ownerId, Pageable page) {
+        return bookingRepository.findBookingsByItem_Owner_IdAndStatus(ownerId, BookingStatus.WAITING, page)
                 .stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
 }

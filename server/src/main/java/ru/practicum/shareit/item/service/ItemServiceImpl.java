@@ -15,7 +15,6 @@ import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.exceptions.CommentCreationException;
-import ru.practicum.shareit.exceptions.PaginationParametersException;
 import ru.practicum.shareit.exceptions.notfound.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.notfound.RequestNotFoundException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
@@ -52,7 +51,6 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    @Transactional
     public ItemDtoShort addItem(Long userId, ItemDtoShort itemDtoShort) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         ItemRequest itemRequest = null;   //интересно так вообще делают?
@@ -61,12 +59,11 @@ public class ItemServiceImpl implements ItemService {
                     .orElseThrow(() -> new RequestNotFoundException(itemDtoShort.getRequestId()));
         }
         Item item = itemRepository.save(ItemMapper.toItem(owner, itemDtoShort, itemRequest));
-        log.info(item.toString());
+        log.info("item {} c id={} добавлена", item.getName(), item.getId());
         return ItemMapper.toItemDto(item);
     }
 
     @Override
-    @Transactional
     public ItemDtoShort updateItem(long userId, long itemId, ItemDtoShort itemDtoShort) {
         return itemRepository.findByOwner_IdAndId(userId, itemId).map(item -> {
             Item item1 = ItemMapper.updateFromDto(item, itemDtoShort);
@@ -124,9 +121,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private static Pageable makePageParam(int from, int size) {
-        if (from < 0 || size < 1) {
-            throw new PaginationParametersException("Неверные параметры страницы");
-        }
         int page = from / size;
         Sort sort = Sort.by("id").ascending();
         return PageRequest.of(page, size, sort);

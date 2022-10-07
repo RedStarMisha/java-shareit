@@ -7,7 +7,6 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.strategy.BookingState;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -48,7 +47,7 @@ public class BookingController {
                             @RequestParam(name = "state", defaultValue = "ALL", required = false) BookingState state,
                             @RequestParam(name = "from", defaultValue = "0") Integer from,
                             @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        return bookingService.getUserBookingByState(userId, state, from, size);
+        return bookingService.getBookingByStateAndBookerId(userId, state, from, size);
     }
 
     @GetMapping("/owner")
@@ -56,7 +55,7 @@ public class BookingController {
                             @RequestParam(name = "state", defaultValue = "ALL", required = false) BookingState state,
                             @RequestParam(name = "from", defaultValue = "0") Integer from,
                             @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        return bookingService.getBookingForUsersItem(userId, state, from, size);
+        return bookingService.getBookingByStateAndItemsOwner(userId, state, from, size);
     }
 
 }
