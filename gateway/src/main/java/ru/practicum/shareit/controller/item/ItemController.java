@@ -7,18 +7,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.validation.Create;
-import ru.practicum.shareit.validation.Update;
+import validation.Create;
+import validation.Update;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.Collections;
 
 @Controller
 @AllArgsConstructor(onConstructor_ = @Autowired)
 @Validated
 @Slf4j
+@RequestMapping("/items")
 public class ItemController {
 
     private final ItemClient itemClient;
@@ -54,7 +56,7 @@ public class ItemController {
 
     @GetMapping("/search")
     ResponseEntity<Object> findItemsByName(@RequestHeader("X-Sharer-User-Id") long userId,
-                                       @NotBlank @RequestParam(name = "text") String text,
+                                       @RequestParam(name = "text") String text,
                                        @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                        @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Get items by word={}", text);

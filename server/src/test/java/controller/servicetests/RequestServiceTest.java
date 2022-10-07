@@ -1,7 +1,6 @@
 package controller.servicetests;
 
 import controller.TestUtil;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
-import ru.practicum.shareit.exceptions.PaginationParametersException;
 import ru.practicum.shareit.requests.RequestMapper;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
@@ -72,17 +70,17 @@ public class RequestServiceTest {
                 is(PageRequest.of(1, 3, Sort.by("created").descending())));
     }
 
-    @Test
-    void makePageableWithIncorrectParameters() {
-        PaginationParametersException e1 = Assertions.assertThrows(
-                PaginationParametersException.class,
-                () -> ReflectionTestUtils.invokeMethod(requestService, "makePageParam", -1, 2));
-        PaginationParametersException e2 = Assertions.assertThrows(
-                PaginationParametersException.class,
-                () -> ReflectionTestUtils.invokeMethod(requestService, "makePageParam", 0, 0));
-        assertThat(e1.getMessage(), is("Неверные параметры страницы"));
-        assertThat(e2.getMessage(), is("Неверные параметры страницы"));
-    }
+//    @Test
+//    void makePageableWithIncorrectParameters() {
+//        PaginationParametersException e1 = Assertions.assertThrows(
+//                PaginationParametersException.class,
+//                () -> ReflectionTestUtils.invokeMethod(requestService, "makePageParam", -1, 2));
+//        PaginationParametersException e2 = Assertions.assertThrows(
+//                PaginationParametersException.class,
+//                () -> ReflectionTestUtils.invokeMethod(requestService, "makePageParam", 0, 0));
+//        assertThat(e1.getMessage(), is("Неверные параметры страницы"));
+//        assertThat(e2.getMessage(), is("Неверные параметры страницы"));
+//    }
 
 
 }

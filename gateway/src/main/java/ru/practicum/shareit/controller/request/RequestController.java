@@ -14,6 +14,7 @@ import javax.validation.constraints.PositiveOrZero;
 @Controller
 @AllArgsConstructor(onConstructor_ = @Autowired)
 @Validated
+@RequestMapping(path = "/requests")
 public class RequestController {
     private final RequestClient requestClient;
 
@@ -24,7 +25,7 @@ public class RequestController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getUserRequests(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<Object> getUserRequests(@RequestHeader("X-Sharer-User-Id") long userId) {
         return requestClient.getUserRequests(userId);
     }
 

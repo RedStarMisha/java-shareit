@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.requests.RequestMapper;
 import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
 import ru.practicum.shareit.requests.storage.RequestRepository;
-import ru.practicum.shareit.exceptions.PaginationParametersException;
 import ru.practicum.shareit.exceptions.notfound.RequestNotFoundException;
 import ru.practicum.shareit.exceptions.notfound.UserNotFoundException;
 import ru.practicum.shareit.requests.model.ItemRequest;
@@ -68,9 +67,6 @@ public class RequestServiceImpl implements RequestService {
     }
 
     public static Pageable makePageParam(int from, int size) {
-        if (from < 0 || size < 1) {
-            throw new PaginationParametersException("Неверные параметры страницы");
-        }
         int page = from / size;
         Sort sort = Sort.by("created").descending();
         return PageRequest.of(page, size, sort);

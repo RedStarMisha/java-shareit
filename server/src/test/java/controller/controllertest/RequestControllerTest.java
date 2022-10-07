@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.practicum.shareit.ShareItServer;
-import ru.practicum.shareit.requests.ItemRequestController;
+import ru.practicum.shareit.requests.RequestController;
 import ru.practicum.shareit.requests.model.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequestDtoEntry;
 import ru.practicum.shareit.requests.service.RequestService;
@@ -28,9 +28,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ItemRequestController.class)
+@WebMvcTest(RequestController.class)
 @ContextConfiguration(classes={ShareItServer.class})
-public class ItemRequestControllerTest {
+public class RequestControllerTest {
 
     @Autowired
     private ObjectMapper mapper;
