@@ -1,5 +1,6 @@
 package ru.practicum.shareit.controller.booking;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -13,6 +14,7 @@ import ru.practicum.shareit.controller.client.BaseClient;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class BookingClient extends BaseClient {
     private static final String API_PREFIX = "/bookings";
 
@@ -27,15 +29,18 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> addBooking(long userId, BookingDtoEntry requestDto) {
+        log.info("Creating booking {}, userId={}", requestDto, userId);
         return post("", userId, requestDto);
     }
 
     public ResponseEntity<Object> approveStatus(long userId, long bookingId, boolean approved) {
+        log.info("Approve booking status by userId={} for bookingId={}", userId, bookingId);
         Map<String, Object> parameters = Map.of("approved", approved);
-        return post("/" + bookingId + "?approved={approved}", userId);
+        return patch("/" + bookingId + "?approved={approved}", userId, parameters, null);
     }
 
     public ResponseEntity<Object> getBookings(long userId, BookingState state, Integer from, Integer size) {
+        log.info("Get booking with state {}, userId={}, from={}, size={}", state, userId, from, size);
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
                 "from", from,
@@ -49,6 +54,7 @@ public class BookingClient extends BaseClient {
     }
 
     ResponseEntity<Object> getBookingByOwner(long ownerId, BookingState state, int from, int size) {
+        log.info("Get booking with state {}, ownerId={}, from={}, size={}", state, ownerId, from, size);
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
                 "from", from,

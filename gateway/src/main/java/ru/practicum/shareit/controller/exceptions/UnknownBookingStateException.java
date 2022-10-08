@@ -1,4 +1,4 @@
-package ru.practicum.shareit.exceptions;
+package ru.practicum.shareit.controller.exceptions;
 
 public class UnknownBookingStateException extends RuntimeException {
 
