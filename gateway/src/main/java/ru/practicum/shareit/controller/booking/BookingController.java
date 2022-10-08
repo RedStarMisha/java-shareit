@@ -25,7 +25,6 @@ public class BookingController {
 
 
 	@PostMapping
-	@Cacheable(value = "bookings")
 	public ResponseEntity<Object> addBooking(@RequestHeader("X-Sharer-User-Id") long bookerId,
 											 @RequestBody @Valid BookingDtoEntry requestDto) {
 		return bookingClient.addBooking(bookerId, requestDto);
@@ -40,7 +39,6 @@ public class BookingController {
 	}
 
 	@GetMapping
-	@Cacheable(value = "bookings")
 	public ResponseEntity<Object> getBookings(@RequestHeader("X-Sharer-User-Id") long bookerId,
 										  @RequestParam(name = "state", defaultValue = "all") String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
@@ -51,7 +49,7 @@ public class BookingController {
 	}
 
 	@GetMapping("/{bookingId}")
-	@Cacheable(value = "bookings", key = "#bookingId")
+	@Cacheable(value = "bookings", key = "{#bookingId, #userId}")
 	public ResponseEntity<Object> getBooking(@RequestHeader("X-Sharer-User-Id") long userId,
 											 @PathVariable Long bookingId) {
 		log.info("Get booking {}, userId={}", bookingId, userId);
