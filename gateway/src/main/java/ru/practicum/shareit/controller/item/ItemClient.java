@@ -53,7 +53,7 @@ public class ItemClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("?text={text}&from={from}&size={size}", userId, parameters);
+        return get("/search?text={text}&from={from}&size={size}", userId, parameters);
     }
 
     ResponseEntity<Object> addComment(long authorId, long itemId, CommentDto commentDto) {
