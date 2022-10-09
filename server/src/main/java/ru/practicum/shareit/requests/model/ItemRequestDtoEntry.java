@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-
 /**
  * // Item Request Dto .
  */
@@ -14,6 +12,5 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class ItemRequestDtoEntry {
 
-    @NotBlank
     private String description;
 }
