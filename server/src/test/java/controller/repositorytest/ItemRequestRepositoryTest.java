@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.*;
 import java.util.List;
 
 @DataJpaTest
-@ContextConfiguration(classes={ShareItServer.class})
+@ContextConfiguration(classes = {ShareItServer.class})
 @Sql(scripts = "/create_four_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class ItemRequestRepositoryTest {
 

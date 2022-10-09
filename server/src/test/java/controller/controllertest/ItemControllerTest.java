@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ItemController.class)
-@ContextConfiguration(classes={ShareItServer.class})
+@ContextConfiguration(classes = {ShareItServer.class})
 class ItemControllerTest {
 
     @Autowired
@@ -165,7 +165,7 @@ class ItemControllerTest {
 
         Mockito.doThrow(new CommentCreationException(String.format("User с id = %d" +
                         " не может оставить комментарий Item c id = %d", userId, itemId)))
-                        .when(itemService).addComment(anyLong(), anyLong(), ArgumentMatchers.any(CommentDto.class));
+                .when(itemService).addComment(anyLong(), anyLong(), ArgumentMatchers.any(CommentDto.class));
 
         CommentDto request = makeCommentDto(null, "текст", null, null, null);
 

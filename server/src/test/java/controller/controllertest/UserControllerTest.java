@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.*;
 
 @WebMvcTest(controllers = UserController.class)
-@ContextConfiguration(classes={ShareItServer.class})
+@ContextConfiguration(classes = {ShareItServer.class})
 public class UserControllerTest {
 
     @Autowired

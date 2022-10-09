@@ -17,7 +17,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
-@ContextConfiguration(classes={ShareItServer.class})
+@ContextConfiguration(classes = {ShareItServer.class})
 class ItemRequestDtoTest {
 
     @Autowired

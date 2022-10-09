@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RequestController.class)
-@ContextConfiguration(classes={ShareItServer.class})
+@ContextConfiguration(classes = {ShareItServer.class})
 public class RequestControllerTest {
 
     @Autowired
