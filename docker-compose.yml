@@ -30,7 +30,7 @@ services:
       - SPRING_DATASOURCE_USER=root
       - SPRING_DATASOURCE_PASSWORD=root
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:9091
-      - TZ=Europe/Moscow
+#      - TZ=Europe/Moscow
 
   db:
     image: postgres:13.7-alpine
@@ -41,4 +41,4 @@ services:
       - POSTGRES_DB=shareit
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - PGTZ=Europe/Moscow
+#      - PGTZ=Europe/Moscow
