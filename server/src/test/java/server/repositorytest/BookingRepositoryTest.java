@@ -1,6 +1,6 @@
-package controller.repositorytest;
+package server.repositorytest;
 
-import controller.TestUtil;
+import server.TestUtil;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

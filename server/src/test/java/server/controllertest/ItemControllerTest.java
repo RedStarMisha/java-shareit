@@ -1,7 +1,7 @@
-package controller.controllertest;
+package server.controllertest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import controller.TestUtil;
+import server.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;

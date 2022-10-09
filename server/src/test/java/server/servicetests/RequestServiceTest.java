@@ -1,6 +1,6 @@
-package controller.servicetests;
+package server.servicetests;
 
-import controller.TestUtil;
+import server.TestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,18 +69,4 @@ public class RequestServiceTest {
         assertThat(ReflectionTestUtils.invokeMethod(requestService, "makePageParam", 3, 3),
                 is(PageRequest.of(1, 3, Sort.by("created").descending())));
     }
-
-//    @Test
-//    void makePageableWithIncorrectParameters() {
-//        PaginationParametersException e1 = Assertions.assertThrows(
-//                PaginationParametersException.class,
-//                () -> ReflectionTestUtils.invokeMethod(requestService, "makePageParam", -1, 2));
-//        PaginationParametersException e2 = Assertions.assertThrows(
-//                PaginationParametersException.class,
-//                () -> ReflectionTestUtils.invokeMethod(requestService, "makePageParam", 0, 0));
-//        assertThat(e1.getMessage(), is("Неверные параметры страницы"));
-//        assertThat(e2.getMessage(), is("Неверные параметры страницы"));
-//    }
-
-
-}
+    }

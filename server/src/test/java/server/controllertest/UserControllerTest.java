@@ -1,4 +1,4 @@
-package controller.controllertest;
+package server.controllertest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -60,23 +60,6 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
     }
 
-//    @Test
-//    void shouldReturn400WhenNullParameters() throws Exception {
-//        mvc.perform(post("/users")
-//                        .content(mapper.writeValueAsString(makeUserDto(null, "", "as@ya.ru")))
-//                        .characterEncoding(StandardCharsets.UTF_8)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//
-//        mvc.perform(post("/users")
-//                        .content(mapper.writeValueAsString(makeUserDto(null, "asd", "asa.ru")))
-//                        .characterEncoding(StandardCharsets.UTF_8)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//    }
-
     @Test
     void shouldUpdateNameAndEmail() throws Exception {
         UserDto userDto = makeUserDto(1L, "petya", "as@ya.ru");
@@ -118,8 +101,6 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
-//                .andExpect(res -> assertEquals("unknown",
-//                        res.getResolvedException().getMessage()));
     }
 
     @Test

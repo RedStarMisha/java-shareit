@@ -1,6 +1,6 @@
-package controller.dtotest;
+package server.dtotest;
 
-import controller.TestUtil;
+import server.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -42,7 +42,6 @@ class ItemRequestDtoTest {
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(dto.getId().intValue());
         assertThat(result).extractingJsonPathStringValue("$.description").isEqualTo(dto.getDescription());
         assertThat(result).extractingJsonPathNumberValue("$.requestor").isEqualTo(dto.getRequestor().intValue());
-//        assertThat(result).extractingJsonPathStringValue("$.created").isEqualTo("2022.09.23 15:22");
         assertThat(result).extractingJsonPathValue("$.items").isInstanceOf(ArrayList.class);
         assertThat(result).extractingJsonPathNumberValue("$.items[0].id").isEqualTo(item.getId().intValue());
         assertThat(result).extractingJsonPathStringValue("$.items[0].name").isEqualTo(item.getName());

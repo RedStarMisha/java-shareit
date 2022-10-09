@@ -1,6 +1,6 @@
-package controller.servicetests;
+package server.servicetests;
 
-import controller.TestUtil;
+import server.TestUtil;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
-import static controller.TestUtil.makeBookingDtoEntry;
+import static server.TestUtil.makeBookingDtoEntry;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static ru.practicum.shareit.booking.BookingMapper.*;
@@ -174,23 +174,6 @@ public class BookingServiceTest {
                 () -> bookingService.approveStatus(item.getOwner().getId(), bookingId, true));
         assertThat(e.getMessage(), is("У аренды нельзя изменить статус"));
     }
-
-//    @Test
-//    void shouldGetBookingStateWaiting() {
-//        BookingState state = ReflectionTestUtils.invokeMethod(bookingService, "getBookingState",
-//                "WAITING");
-//
-//        assertThat(state, Matchers.is(BookingState.WAITING));
-//    }
-
-//    @Test
-//    void shouldThrowExceptionWhenUnknownState() {
-//        UnknownBookingStateException e = Assertions.assertThrows(UnknownBookingStateException.class,
-//                () -> ReflectionTestUtils.invokeMethod(bookingService, "getBookingState",
-//                        "SUPER"));
-//
-//        assertThat(e.getMessage(), is("Unknown state: SUPER"));
-//    }
 
     @Test
     void makePageable() {

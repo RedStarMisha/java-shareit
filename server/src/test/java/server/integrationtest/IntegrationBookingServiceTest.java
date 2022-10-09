@@ -1,4 +1,4 @@
-package controller.integrationtest;
+package server.integrationtest;
 
 import lombok.RequiredArgsConstructor;
 import org.hamcrest.Matchers;

@@ -1,4 +1,4 @@
-package controller;
+package server;
 
 import org.springframework.lang.Nullable;
 import ru.practicum.shareit.booking.BookingStatus;

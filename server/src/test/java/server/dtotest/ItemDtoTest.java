@@ -1,6 +1,6 @@
-package controller.dtotest;
+package server.dtotest;
 
-import controller.TestUtil;
+import server.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -68,16 +68,6 @@ class ItemDtoTest {
         assertThat(result).extractingJsonPathStringValue("$.comments.[0]text").isEqualTo(comment.getText());
         assertThat(result).extractingJsonPathStringValue("$.comments[0].authorName").isEqualTo(comment.getAuthorName());
         assertThat(result).extractingJsonPathNumberValue("$.comments[0].itemId").isEqualTo(comment.getItemId().intValue());
-
-//        assertThat(result).extractingJsonPathStringValue("$.end").isEqualTo("2022.09.24 15:22");
-//        assertThat(result).extractingJsonPathValue("$.item.id").isEqualTo(item.getId().intValue());
-//        assertThat(result).extractingJsonPathStringValue("$.item.name").isEqualTo(item.getName());
-//        assertThat(result).extractingJsonPathStringValue("$.item.description").isEqualTo(item.getDescription());
-//        assertThat(result).extractingJsonPathBooleanValue("$.item.available").isEqualTo(item.getAvailable().booleanValue());
-//        assertThat(result).extractingJsonPathNumberValue("$.booker.id").isEqualTo(booker.getId().intValue());
-//        assertThat(result).extractingJsonPathStringValue("$.booker.name").isEqualTo(booker.getName());
-//        assertThat(result).extractingJsonPathStringValue("$.booker.email").isEqualTo(booker.getEmail());
-//        assertThat(result).extractingJsonPathStringValue("$.status").isEqualTo(dto.getStatus().toString());
     }
 
 

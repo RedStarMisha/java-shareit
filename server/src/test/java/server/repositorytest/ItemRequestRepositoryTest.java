@@ -1,6 +1,6 @@
-package controller.repositorytest;
+package server.repositorytest;
 
-import controller.TestUtil;
+import server.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

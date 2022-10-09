@@ -1,7 +1,7 @@
-package controller.controllertest;
+package server.controllertest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import controller.TestUtil;
+import server.TestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -84,19 +84,6 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.booker.id", is(booker.getId()), Long.class))
                 .andExpect(jsonPath("$.status", is("WAITING")));
     }
-
-//    @Test
-//    void should400WhenWrongBookingDate() throws Exception {
-//        BookingDtoEntry request = TestUtil.makeBookingDtoEntry(end, start, itemDtoShort.getId());
-//
-//        mvc.perform(post("/bookings")
-//                        .content(mapper.writeValueAsString(request))
-//                        .header("X-Sharer-User-Id", booker.getId())
-//                        .characterEncoding(StandardCharsets.UTF_8)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//    }
 
     @Test
     void approveStatus() throws Exception {
@@ -185,25 +172,6 @@ class BookingControllerTest {
                     .andExpect(jsonPath("$[" + i + "].status", is(response.get(i).getStatus().toString())));
         }
     }
-
-//    @Test
-//    void shouldReturn400WhenGetUserBookingWithUnknownState() throws Exception {
-//        Mockito.doThrow(new BookingStatusException("UNKNOWN")).when(bookingService)
-//                .getBookingByStateAndBookerId(anyLong(), any(), anyInt(), anyInt());
-//
-//        mvc.perform(get("/bookings")
-//                        .header("X-Sharer-User-Id", booker.getId())
-//                        .param("state", "UNKNOWN")
-//                        .param("from", "0")
-//                        .param("size", "2")
-//                        .characterEncoding(StandardCharsets.UTF_8)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(res -> assertEquals("UNKNOWN",
-//                        res.getResolvedException().getMessage()));
-//    }
-
 
     @Test
     void getBookingForUsersItem() throws Exception {
