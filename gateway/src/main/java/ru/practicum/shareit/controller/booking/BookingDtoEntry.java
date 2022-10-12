@@ -1,7 +1,6 @@
 package ru.practicum.shareit.controller.booking;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 import validation.CheckBookingDate;
 
 import javax.validation.constraints.NotNull;
@@ -10,8 +9,7 @@ import java.time.LocalDateTime;
 /**
  * // TODO .
  */
-@AllArgsConstructor
-@Data
+@Value
 @CheckBookingDate
 public class BookingDtoEntry {
 

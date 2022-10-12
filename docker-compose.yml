@@ -26,7 +26,7 @@ services:
     depends_on:
     - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/myshareit
       - SPRING_DATASOURCE_USER=root
       - SPRING_DATASOURCE_PASSWORD=root
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:9091
@@ -38,7 +38,7 @@ services:
     ports:
       - "6541:5432"
     environment:
-      - POSTGRES_DB=shareit
+      - POSTGRES_DB=myshareit
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 #      - PGTZ=Europe/Moscow

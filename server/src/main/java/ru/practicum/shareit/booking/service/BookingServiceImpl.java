@@ -93,30 +93,6 @@ public class BookingServiceImpl implements BookingService {
         return strategy.findBookingByStrategy(ownerId, makePageParam(from, size));
     }
 
-//    private List<BookingDto> filterByStateForItemOwnerId(Long ownerId, BookingState state, Pageable page) {
-//        LocalDateTime date = LocalDateTime.now();
-//        List<Booking> list;
-//        switch (state) {
-//            case CURRENT:
-//                list = bookingRepository.findCurrentBookingsByItemOwnerId(ownerId, date, page);
-//                break;
-//            case PAST:
-//                list = bookingRepository.findBookingsByItem_Owner_IdAndEndBefore(ownerId, date, page);
-//                break;
-//            case FUTURE:
-//                list = bookingRepository.findBookingsByItem_Owner_IdAndStartAfter(ownerId, date, page);
-//                break;
-//            case WAITING:
-//            case REJECTED:
-//                list = bookingRepository.findBookingsByItem_Owner_IdAndStatus(ownerId,
-//                        BookingStatus.valueOf(state.toString()), page);
-//                break;
-//            default:
-//                list = bookingRepository.findBookingsByItem_Owner_Id(ownerId, page);
-//        }
-//        return list.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
-//    }
-
     public static Pageable makePageParam(int from, int size) {
         int page = from / size;
         Sort sort = Sort.by("start").descending();

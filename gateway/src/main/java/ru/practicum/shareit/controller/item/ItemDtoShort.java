@@ -1,6 +1,6 @@
 package ru.practicum.shareit.controller.item;
 
-import lombok.Data;
+import lombok.Value;
 import validation.Create;
 import validation.IsText;
 import validation.Update;
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 /**
  * // TODO .
  */
-@Data
+@Value
 public class ItemDtoShort {
 
     private Long id;

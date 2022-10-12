@@ -1,7 +1,6 @@
 package ru.practicum.shareit.controller.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 import validation.Create;
 import validation.IsText;
 import validation.Update;
@@ -13,8 +12,7 @@ import javax.validation.constraints.NotNull;
 /**
  * UserDto class
  */
-@Data
-@AllArgsConstructor
+@Value
 public class UserDto {
 
     private Long id;
